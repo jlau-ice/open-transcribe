@@ -12,7 +12,13 @@
     <groupId>com.carbon</groupId>
     <artifactId>server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>server</name>
+    <modules>
+        <module>core</module>
+        <module>system</module>
+        <module>application</module>
+    </modules>
     <properties>
         <java.version>1.8</java.version>
     </properties>
