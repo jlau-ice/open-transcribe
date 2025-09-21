@@ -2,7 +2,7 @@ import axios from 'axios'
 
 // 创建自定义的 Axios 实例，用于 OpenAPI 请求
 export const axiosInstance = axios.create({
-  baseURL: 'http://127.0.0.1:8101/api',
+  baseURL: '/api',
   timeout: 60000,
   withCredentials: true,
   // 确保Cookie被正确发送

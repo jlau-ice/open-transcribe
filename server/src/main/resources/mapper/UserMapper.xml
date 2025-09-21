@@ -11,6 +11,11 @@
         <result property="userAvatar" column="user_avatar" jdbcType="VARCHAR"/>
         <result property="userProfile" column="user_profile" jdbcType="VARCHAR"/>
         <result property="userRole" column="user_role" jdbcType="VARCHAR"/>
+        <result property="integral" column="integral" javaType="java.lang.Integer"/>
+        <result property="amount" column="amount" javaType="java.math.BigDecimal"/>
+        <result property="temp1" column="temp1" javaType="java.lang.String"/>
+        <result property="temp2" column="temp2" javaType="java.lang.String"/>
+        <result property="temp3" column="temp3" javaType="java.lang.String"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
@@ -19,7 +24,7 @@
     <sql id="Base_Column_List">
         id, union_id, mp_open_id,
     user_name, user_avatar, user_profile,
-    user_role, create_time, update_time, is_delete
+    user_role, integral, amount, create_time, update_time, is_delete
     </sql>
 
 </mapper>

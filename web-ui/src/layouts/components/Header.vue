@@ -1,9 +1,8 @@
 <template>
   <div class="h-[60px] shadow overflow-hidden">
     <div class="flex items-center">
-      <div class="flex items-center gap-[10px] ml-[24px] w-[110px] cursor-pointer select-none">
-        <img width="40px" src="@/assets/leetcode.svg" alt="logo" />
-        <span class="text-[#3D3D3D] font-bold whitespace-nowrap">ICE OJ</span>
+      <div class="flex items-center gap-[10px] ml-[34px] cursor-pointer select-none">
+        <img width="35px" src="@/assets/logo-png.png" alt="logo" />
       </div>
       <a-menu mode="horizontal" :default-selected-keys="[currentPath]" @menu-item-click="menuItemClick">
         <a-menu-item v-for="value in filterMenu" :key="value.path">
@@ -11,7 +10,7 @@
         </a-menu-item>
       </a-menu>
       <a-dropdown trigger="hover">
-        <div class="mr-[24px] flex items-center gap-[10px] cursor-pointer select-none">
+        <div class="mr-[34px] flex items-center gap-[10px] cursor-pointer select-none">
           <a-avatar>
             <img width="40" height="40" alt="avatar" src="https://p1-arco.byteimg.com/tos-cn-i-uwbnlip3yd/3ee5f13fb09879ecb5185e440cef6eb9.png~tplv-uwbnlip3yd-webp.webp" />
           </a-avatar>

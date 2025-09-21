@@ -3,12 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 export type LoginUserVO = {
-    createTime?: string;
-    id?: number;
-    updateTime?: string;
-    userAvatar?: string;
-    userName?: string;
-    userProfile?: string;
-    userRole?: string;
-};
-
+  createTime?: string
+  id?: number
+  updateTime?: string
+  userAvatar?: string
+  userName?: string
+  userProfile?: string
+  userRole?: string
+  integral?: number
+  amount?: string
+}

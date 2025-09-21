@@ -1,5 +1,5 @@
 {
-  "name": "online-judge-frontend",
+  "name": "open-transcribe-ui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -12,10 +12,8 @@
   "dependencies": {
     "axios": "^1.11.0",
     "form-data": "^4.0.4",
-    "monaco-editor": "^0.53.0",
     "pinia": "^3.0.3",
     "tailwindcss": "^3.4.0",
-    "vite-plugin-monaco-editor": "^1.1.0",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },

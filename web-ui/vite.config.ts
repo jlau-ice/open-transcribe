@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     port: 8888,
     proxy: {
-      '/api': 'http://localhost:8101',
+      '/api': 'http://192.168.172.94:8101',
     },
   },
   resolve: {

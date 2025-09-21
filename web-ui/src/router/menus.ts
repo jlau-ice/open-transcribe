@@ -3,20 +3,20 @@ import type { RouteRecordRaw } from 'vue-router'
 
 export const menus: Array<RouteRecordRaw> = [
   {
-    name: '题目列表',
-    path: '/question/list',
-    component: () => import('@/views/question/List.vue'),
+    name: '文件管理',
+    path: '/file/list',
+    component: () => import('@/views/file/FileList.vue'),
   },
   {
-    name: '题目管理',
-    path: '/question/manage',
-    component: () => import('@/views/question/Manage.vue'),
+    name: '任务管理',
+    path: '/task/manage',
+    component: () => import('@/views/task/TaskManage.vue'),
     meta: { access: ACCESS_ENUM.ADMIN },
   },
   {
-    name: '题目详情',
-    path: '/question/detail',
-    component: () => import('@/views/question/Detail.vue'),
+    name: '模型配置',
+    path: '/model/config',
+    component: () => import('@/views/model/ModelConfig.vue'),
     meta: {},
   },
 ]

@@ -3,11 +3,11 @@
     <div class="py-[20px] flex justify-center items-center h-[calc(60vh-80px)]">
       <div class="flex flex-col justify-center items-center gap-[15px] select-none">
         <div class="flex items-center gap-[10px]">
-          <img width="44" src="@/assets/ant.svg" alt="logo" />
-          <span class="text-[33px] font-semibold font-family-alibaba">Online Judge</span>
+          <img width="44" src="@/assets/logo-png.png" alt="logo" />
+          <span class="text-[33px] font-semibold font-family-alibaba">Open Transcribe</span>
         </div>
-        <span class="text-[#515258] tracking-wider font-family-alibaba">开源的OJ判题系统</span>
-        <a-form :model="form" :rules="rules" layout="vertical" class="mt-[20px]" ref="formRef"  @submit="handleRegister">
+        <span class="text-[#515258] tracking-wider font-family-alibaba">开源的语音转文本平台</span>
+        <a-form :model="form" :rules="rules" layout="vertical" class="mt-[20px]" ref="formRef" @submit="handleRegister">
           <a-form-item hide-label field="userAccount">
             <a-input v-model="form.userAccount" placeholder="请输入账号" allow-clear />
           </a-form-item>
@@ -35,7 +35,7 @@
 import router from '@/router'
 import { reactive, ref } from 'vue'
 import type { UserRegisterRequest } from '@/api'
-import  { UserControllerService } from '@/api'
+import { UserControllerService } from '@/api'
 import type { FormInstance } from '@arco-design/web-vue'
 import message from '@arco-design/web-vue/es/message'
 const form = reactive<UserRegisterRequest>({
@@ -62,9 +62,9 @@ const handleRegister = async () => {
     if (isValid) return
     UserControllerService.userRegisterUsingPost(form).then((res) => {
       if (res.code === 200) {
-        message.success("注册成功")
+        message.success('注册成功')
         router.push({ path: '/login' })
-      }else {
+      } else {
         message.error(res.message)
       }
     })

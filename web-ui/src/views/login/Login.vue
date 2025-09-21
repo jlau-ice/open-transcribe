@@ -3,10 +3,10 @@
     <div class="py-[20px] flex justify-center items-center h-[calc(60vh-80px)]">
       <div class="flex flex-col justify-center items-center gap-[15px] select-none">
         <div class="flex items-center gap-[10px]">
-          <img width="44" src="@/assets/ant.svg" alt="logo" />
-          <span class="text-[33px] font-semibold font-family-alibaba">Online Judge</span>
+          <img width="44" src="@/assets/logo-png.png" alt="logo" />
+          <span class="text-[33px] font-semibold font-family-alibaba">Open Transcribe</span>
         </div>
-        <span class="text-[#515258] tracking-wider font-family-alibaba">开源的OJ判题系统</span>
+        <span class="text-[#515258] tracking-wider font-family-alibaba">开源的语音转文本平台</span>
         <a-form :model="form" :rules="rules" layout="vertical" ref="formRef" class="mt-[20px]" @submit="handleLogin">
           <a-form-item hide-label field="userAccount">
             <a-input v-model="form.userAccount" placeholder="请输入账号" allow-clear />
@@ -59,7 +59,7 @@ const handleLogin = async () => {
     if (res.code === 200) {
       message.success('登录成功')
       await userStore.fetchLoginUser()
-      await router.push({ path: '/question/list' })
+      await router.push({ path: '/file/list' })
     } else {
       message.error(res.message)
     }

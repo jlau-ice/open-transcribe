@@ -1,6 +1,7 @@
 package com.carbon.model.vo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
@@ -34,6 +35,17 @@ public class UserVO implements Serializable {
      * 用户角色：user/admin/ban
      */
     private String userRole;
+
+    /**
+     * 用户积分
+     */
+    private Integer integral;
+
+
+    /**
+     * 金额（余额）
+     */
+    private BigDecimal amount;
 
     /**
      * 创建时间

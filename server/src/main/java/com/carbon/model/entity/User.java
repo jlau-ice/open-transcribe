@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import lombok.Data;
 
@@ -61,6 +62,24 @@ public class User implements Serializable {
      * 用户角色：user/admin/ban
      */
     private String userRole;
+
+    /**
+     * 用户积分
+     */
+    private Integer integral;
+
+
+    /**
+     * 金额（余额）
+     */
+    private BigDecimal amount;
+
+    /**
+     * 保留字段123
+     */
+    private String temp1;
+    private String temp2;
+    private String temp3;
 
     /**
      * 创建时间
