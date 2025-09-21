@@ -3,9 +3,9 @@ import type { RouteRecordRaw } from 'vue-router'
 
 export const menus: Array<RouteRecordRaw> = [
   {
-    name: '文件管理',
-    path: '/file/list',
-    component: () => import('@/views/file/FileList.vue'),
+    name: '首页',
+    path: '/home',
+    component: () => import('@/views/home/Home.vue'),
   },
   {
     name: '任务管理',

@@ -1,12 +1,12 @@
 <template>
-  <div class="h-[60px] shadow overflow-hidden">
+  <div class="h-[60px] overflow-hidden border-b border-b-[#e0e0e0] border-solid">
     <div class="flex items-center">
       <div class="flex items-center gap-[10px] ml-[34px] cursor-pointer select-none">
         <img width="35px" src="@/assets/logo-png.png" alt="logo" />
       </div>
       <a-menu mode="horizontal" :default-selected-keys="[currentPath]" @menu-item-click="menuItemClick">
         <a-menu-item v-for="value in filterMenu" :key="value.path">
-          {{ value.name }}
+          <span class="font-bold text-[15px]">{{ value.name }}</span>
         </a-menu-item>
       </a-menu>
       <a-dropdown trigger="hover">
@@ -84,4 +84,5 @@ const logout = () => {
 :global(.arco-modal-footer) {
   margin-top: 10px !important;
 }
+
 </style>

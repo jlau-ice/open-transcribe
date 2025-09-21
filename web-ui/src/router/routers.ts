@@ -5,7 +5,7 @@ export const routes: Array<RouteRecordRaw> = [
   {
     path: '',
     name: 'home',
-    redirect: '/file/list',
+    redirect: '/home',
     component: () => import('@/layouts/index.vue'),
     children: [...menus],
   },
