@@ -1,0 +1,26 @@
+# Node/Vue
+node_modules/
+dist/
+
+# Java
+target/
+*.class
+
+# Go
+bin/
+*.exe
+*.out
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+env/
+
+# Logs
+*.log
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
