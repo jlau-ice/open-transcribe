@@ -29,7 +29,7 @@ create table if not exists user
 ) comment '用户' collate = utf8mb4_unicode_ci;
 
 -- 音频文件表
-create table if not exists audio_files
+create table if not exists audio_file
 (
     id          bigint auto_increment comment 'id' primary key,
     user_id     bigint                             not null comment '创建用户 id',
@@ -49,7 +49,7 @@ create table if not exists audio_files
 
 
 -- 转写任务表
-create table if not exists audio_files
+create table if not exists transcription_task
 (
     id                bigint auto_increment comment 'id' primary key,
     user_id           bigint                             not null comment '创建用户 id',

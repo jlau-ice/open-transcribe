@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carbon.task.mapper.TranscriptionTaskMapper">
+
+    <resultMap type="com.carbon.task.model.entity.TranscriptionTask" id="TranscriptionTaskResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="fileId" column="file_id"/>
+        <result property="modelName" column="model_name"/>
+        <result property="interfaceAddress" column="interface_address"/>
+        <result property="executionTime" column="execution_time"/>
+        <result property="status" column="status"/>
+        <result property="result" column="result"/>
+        <result property="temp1" column="temp1"/>
+        <result property="temp2" column="temp2"/>
+        <result property="temp3" column="temp3"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <sql id="selectTranscriptionTaskVo">
+        select id,
+               user_id,
+               file_id,
+               model_name,
+               interface_address,
+               execution_time,
+               status,
+               result,
+               temp1,
+               temp2,
+               temp3,
+               create_time,
+               update_time,
+               is_delete
+        from transcription_task
+    </sql>
+
+    <select id="selectTranscriptionTaskList" parameterType="com.carbon.task.model.entity.TranscriptionTask"
+            resultMap="TranscriptionTaskResult">
+        <include refid="selectTranscriptionTaskVo"/>
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="fileId != null ">and file_id = #{fileId}</if>
+            <if test="modelName != null  and modelName != ''">and model_name like concat('%', #{modelName}, '%')</if>
+            <if test="interfaceAddress != null  and interfaceAddress != ''">and interface_address =
+                #{interfaceAddress}
+            </if>
+            <if test="executionTime != null ">and execution_time = #{executionTime}</if>
+            <if test="status != null ">and status = #{status}</if>
+            <if test="result != null  and result != ''">and result = #{result}</if>
+            <if test="temp1 != null  and temp1 != ''">and temp1 = #{temp1}</if>
+            <if test="temp2 != null  and temp2 != ''">and temp2 = #{temp2}</if>
+            <if test="temp3 != null  and temp3 != ''">and temp3 = #{temp3}</if>
+            <if test="isDelete != null ">and is_delete = #{isDelete}</if>
+            and del_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectTranscriptionTaskById" parameterType="Long" resultMap="TranscriptionTaskResult">
+        <include refid="selectTranscriptionTaskVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertTranscriptionTask" parameterType="com.carbon.task.model.entity.TranscriptionTask"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into transcription_task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="fileId != null">file_id,</if>
+            <if test="modelName != null">model_name,</if>
+            <if test="interfaceAddress != null">interface_address,</if>
+            <if test="executionTime != null">execution_time,</if>
+            <if test="status != null">status,</if>
+            <if test="result != null">result,</if>
+            <if test="temp1 != null">temp1,</if>
+            <if test="temp2 != null">temp2,</if>
+            <if test="temp3 != null">temp3,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDelete != null">is_delete,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="fileId != null">#{fileId},</if>
+            <if test="modelName != null">#{modelName},</if>
+            <if test="interfaceAddress != null">#{interfaceAddress},</if>
+            <if test="executionTime != null">#{executionTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="result != null">#{result},</if>
+            <if test="temp1 != null">#{temp1},</if>
+            <if test="temp2 != null">#{temp2},</if>
+            <if test="temp3 != null">#{temp3},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDelete != null">#{isDelete},</if>
+        </trim>
+    </insert>
+
+    <update id="updateTranscriptionTask" parameterType="com.carbon.task.model.entity.TranscriptionTask">
+        update transcription_task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="fileId != null">file_id = #{fileId},</if>
+            <if test="modelName != null">model_name = #{modelName},</if>
+            <if test="interfaceAddress != null">interface_address = #{interfaceAddress},</if>
+            <if test="executionTime != null">execution_time = #{executionTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="result != null">result = #{result},</if>
+            <if test="temp1 != null">temp1 = #{temp1},</if>
+            <if test="temp2 != null">temp2 = #{temp2},</if>
+            <if test="temp3 != null">temp3 = #{temp3},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="logicRemoveByIds" parameterType="String">
+        update transcription_task set del_flag = REPLACE(unix_timestamp(current_timestamp(3)),'.','') where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="logicRemoveById" parameterType="Long">
+        update transcription_task
+        set del_flag = REPLACE(unix_timestamp(current_timestamp(3)), '.', '')
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTranscriptionTaskById" parameterType="Long">
+        delete
+        from transcription_task
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteTranscriptionTaskByIds" parameterType="String">
+        delete from transcription_task where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

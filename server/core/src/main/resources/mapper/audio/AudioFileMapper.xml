@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.carbon.audio.mapper.AudioFileMapper">
+
+    <resultMap type="com.carbon.audio.model.entity.AudioFile" id="AudioFilesResult">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="fileName" column="file_name"/>
+        <result property="filePath" column="file_path"/>
+        <result property="fileSize" column="file_size"/>
+        <result property="duration" column="duration"/>
+        <result property="fileType" column="file_type"/>
+        <result property="status" column="status"/>
+        <result property="temp1" column="temp1"/>
+        <result property="temp2" column="temp2"/>
+        <result property="temp3" column="temp3"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+    <sql id="selectAudioFilesVo">
+        select id,
+               user_id,
+               file_name,
+               file_path,
+               file_size,
+               duration,
+               file_type,
+               status,
+               temp1,
+               temp2,
+               temp3,
+               create_time,
+               update_time,
+               is_delete
+        from audio_file
+    </sql>
+
+    <select id="selectAudioFileList" parameterType="com.carbon.audio.model.entity.AudioFile"
+            resultMap="AudioFilesResult">
+        <include refid="selectAudioFilesVo"/>
+        <where>
+            <if test="userId != null ">and user_id = #{userId}</if>
+            <if test="fileName != null  and fileName != ''">and file_name like concat('%', #{fileName}, '%')</if>
+            <if test="filePath != null  and filePath != ''">and file_path = #{filePath}</if>
+            <if test="fileSize != null ">and file_size = #{fileSize}</if>
+            <if test="duration != null ">and duration = #{duration}</if>
+            <if test="fileType != null  and fileType != ''">and file_type = #{fileType}</if>
+            <if test="status != null ">and status = #{status}</if>
+            <if test="temp1 != null  and temp1 != ''">and temp1 = #{temp1}</if>
+            <if test="temp2 != null  and temp2 != ''">and temp2 = #{temp2}</if>
+            <if test="temp3 != null  and temp3 != ''">and temp3 = #{temp3}</if>
+            <if test="isDelete != null ">and is_delete = #{isDelete}</if>
+            and del_flag = '1'
+        </where>
+    </select>
+
+    <select id="selectAudioFileById" parameterType="Long" resultMap="AudioFilesResult">
+        <include refid="selectAudioFilesVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAudioFile" parameterType="com.carbon.audio.model.entity.AudioFile" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into audio_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="filePath != null and filePath != ''">file_path,</if>
+            <if test="fileSize != null">file_size,</if>
+            <if test="duration != null">duration,</if>
+            <if test="fileType != null and fileType != ''">file_type,</if>
+            <if test="status != null">status,</if>
+            <if test="temp1 != null">temp1,</if>
+            <if test="temp2 != null">temp2,</if>
+            <if test="temp3 != null">temp3,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="isDelete != null">is_delete,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="filePath != null and filePath != ''">#{filePath},</if>
+            <if test="fileSize != null">#{fileSize},</if>
+            <if test="duration != null">#{duration},</if>
+            <if test="fileType != null and fileType != ''">#{fileType},</if>
+            <if test="status != null">#{status},</if>
+            <if test="temp1 != null">#{temp1},</if>
+            <if test="temp2 != null">#{temp2},</if>
+            <if test="temp3 != null">#{temp3},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="isDelete != null">#{isDelete},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAudioFile" parameterType="com.carbon.audio.model.entity.AudioFile">
+        update audio_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="filePath != null and filePath != ''">file_path = #{filePath},</if>
+            <if test="fileSize != null">file_size = #{fileSize},</if>
+            <if test="duration != null">duration = #{duration},</if>
+            <if test="fileType != null and fileType != ''">file_type = #{fileType},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="temp1 != null">temp1 = #{temp1},</if>
+            <if test="temp2 != null">temp2 = #{temp2},</if>
+            <if test="temp3 != null">temp3 = #{temp3},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="isDelete != null">is_delete = #{isDelete},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <update id="logicRemoveByIds" parameterType="String">
+        update audio_file set del_flag = REPLACE(unix_timestamp(current_timestamp(3)),'.','') where id in
+        <foreach item="id" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <update id="logicRemoveById" parameterType="Long">
+        update audio_file
+        set del_flag = REPLACE(unix_timestamp(current_timestamp(3)), '.', '')
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAudioFileById" parameterType="Long">
+        delete
+        from audio_file
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteAudioFileByIds" parameterType="String">
+        delete from audio_file where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
