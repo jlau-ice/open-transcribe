@@ -1,7 +1,8 @@
 package com.carbon.aop;
 
+import com.carbon.annotation.Log;
+import com.carbon.common.BusinessType;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,29 +26,32 @@ public class LogInterceptor {
     /**
      * 执行拦截
      */
-    @Around("execution(* com.carbon..controller.*.*(..))")
-    public Object doInterceptor(ProceedingJoinPoint point) throws Throwable {
+    @Around("@annotation(logAnnotation)")
+    public Object doInterceptor(ProceedingJoinPoint point, Log logAnnotation) throws Throwable {
+        // 获取方法注解
+        //MethodSignature signature = (MethodSignature) point.getSignature();
+        //Method method = signature.getMethod();
+        // 获取注解信息
+        String title = logAnnotation.title();
+        BusinessType businessType = logAnnotation.businessType();
         // 计时
         StopWatch stopWatch = new StopWatch();
         stopWatch.start();
         // 获取请求路径
         RequestAttributes requestAttributes = RequestContextHolder.currentRequestAttributes();
-        HttpServletRequest httpServletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
-        // 生成请求唯一 id
+        HttpServletRequest request = ((ServletRequestAttributes) requestAttributes).getRequest();
         String requestId = UUID.randomUUID().toString();
-        String url = httpServletRequest.getRequestURI();
-        // 获取请求参数
+        String url = request.getRequestURI();
+        // 请求参数
         Object[] args = point.getArgs();
-        String reqParam = "[" + StringUtils.join(args, ", ") + "]";
-        // 输出请求日志
-        log.info("request start，id: {}, path: {}, ip: {}, params: {}", requestId, url,
-                httpServletRequest.getRemoteHost(), reqParam);
-        // 执行原方法
+        log.info("request start, id: {}, path: {}, ip: {}, module: {}, type: {}, params: {}",
+                requestId, url, request.getRemoteHost(), title, businessType, args);
+        // 执行方法
         Object result = point.proceed();
-        // 输出响应日志
+        // 响应日志
         stopWatch.stop();
-        long totalTimeMillis = stopWatch.getTotalTimeMillis();
-        log.info("request end, id: {}, cost: {}ms", requestId, totalTimeMillis);
+        long cost = stopWatch.getTotalTimeMillis();
+        log.info("request end, id: {}, cost: {}ms, response: {}", requestId, cost, result);
         return result;
     }
 }
