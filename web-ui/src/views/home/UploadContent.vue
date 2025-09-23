@@ -29,15 +29,26 @@
             </svg>
             <span class="text-[#FFF]">开始录音</span>
           </div>
-          <div class="text-[#222226] p-[10px] flex justify-center items-center gap-[10px] mt-[12px] cursor-pointer bg-[#ececee] hover:bg-[#f5f5f5] rounded-[10px] min-w-[328px] h-[48px]">
-            <icon-upload />
-            <span>选择本地文件</span>
-          </div>
+          <a-upload :custom-request="handleUpload" :with-credentials="true">
+            <template #upload-button>
+              <div class="text-[#222226] p-[10px] flex justify-center items-center gap-[10px] mt-[12px] cursor-pointer bg-[#ececee] hover:bg-[#f5f5f5] rounded-[10px] min-w-[328px] h-[48px]">
+                <icon-upload />
+                <span>选择本地文件</span>
+              </div>
+            </template>
+          </a-upload>
           <div class="mt-[20px] flex items-center gap-[10px]">
             <span class="text-[12px] text-[#8c8c8c]">最大文件大小：50M </span>
             <span class="text-[12px] text-[#8c8c8c]">最大录制时长：6 小时</span>
             <span class="text-[12px] text-[#8c8c8c]">支持的文件类型</span>
-            <a-tooltip :mini="true" :arrow-style="{ display: 'none' }" content-class="!rounded-md !text-[#f3f3f3] !text-[12px]" background-color="!bg-[#252525b]" content="mp3, mpga, oga, mogg, aac, webm, opus, flac, wav, m4a, ogg" position="top">
+            <a-tooltip
+              :mini="true"
+              :arrow-style="{ display: 'none' }"
+              content-class="!rounded-md !text-[#f3f3f3] !text-[12px]"
+              background-color="!bg-[#252525b]"
+              content="mp3, mpga, oga, mogg, aac, webm, opus, flac, wav, m4a, ogg"
+              position="top"
+            >
               <span class="text-[#8c8c8c] cursor-pointer">
                 <icon-question-circle />
               </span>
@@ -49,6 +60,20 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { AudioFileControllerService } from '@/api'
+const handleUpload = ({ onProgress, onError, onSuccess, fileItem }) => {
+  // fileItem.file is already a File (inherits from Blob) with name/type
+  const file: File = fileItem.file as File
+  AudioFileControllerService.uploadUsingPost(file)
+    .then((res) => {
+      onSuccess && onSuccess(res)
+    })
+    .catch((err) => {
+      onError && onError(err)
+    })
+}
+</script>
 
 <style lang="scss" scoped></style>

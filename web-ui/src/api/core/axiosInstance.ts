@@ -5,10 +5,6 @@ export const axiosInstance = axios.create({
   baseURL: '/api',
   timeout: 60000,
   withCredentials: true,
-  // 确保Cookie被正确发送
-  headers: {
-    'Content-Type': 'application/json',
-  }
 })
 
 // 添加请求拦截器

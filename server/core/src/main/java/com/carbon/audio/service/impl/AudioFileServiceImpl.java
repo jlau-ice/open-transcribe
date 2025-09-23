@@ -1,13 +1,22 @@
 package com.carbon.audio.service.impl;
 
-import java.util.List;
-
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.carbon.audio.mapper.AudioFileMapper;
 import com.carbon.audio.model.entity.AudioFile;
+import com.carbon.audio.service.AudioFileService;
+import com.carbon.common.ErrorCode;
+import com.carbon.exception.BusinessException;
+import com.carbon.model.entity.User;
+import com.carbon.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.carbon.audio.mapper.AudioFileMapper;
-import com.carbon.audio.service.AudioFileService;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import static com.carbon.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 音频文件Service业务层处理
@@ -17,9 +26,39 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class AudioFileServiceImpl implements AudioFileService {
+public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile> implements AudioFileService {
+
+    private final AudioFileMapper audioFileMapper;
+
+    private final UserService userService;
+
+
     @Autowired
-    private AudioFileMapper audioFileMapper;
+    public AudioFileServiceImpl(AudioFileMapper audioFileMapper, UserService userService) {
+        this.audioFileMapper = audioFileMapper;
+        this.userService = userService;
+    }
+
+
+    @Override
+    public void addAudioFile(MultipartFile file, HttpServletRequest request) {
+        // 先判断是否已登录
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        long userId = currentUser.getId();
+        currentUser = userService.getById(userId);
+        if (currentUser == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        AudioFile audioFile = new AudioFile();
+        audioFile.setUserId(userId);
+        audioFile.setFileName(file.getName());
+        // 调用minio 返回的路径
+        audioFile.setFileSize(file.getSize());
+        audioFile.setFileType(file.getContentType());
+        audioFile.setFilePath("minio service return");
+        this.save(audioFile);
+    }
 
     /**
      * 查询音频文件

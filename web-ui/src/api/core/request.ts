@@ -4,7 +4,8 @@ import type {AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse} from 
 /* tslint:disable */
 /* eslint-disable */
 import axios from 'axios';
-import FormData from 'form-data';
+// Use browser-native FormData in the web build
+// import FormData from 'form-data';
 
 import type {OpenAPIConfig} from '@/api';
 import {ApiError, CancelablePromise} from '@/api';
@@ -26,6 +27,7 @@ export const isStringWithValue = (value: any): value is string => {
 };
 
 export const isBlob = (value: any): value is Blob => {
+    // return typeof Blob !== 'undefined' && value instanceof Blob;
     return (
         typeof value === 'object' &&
         typeof value.type === 'string' &&
@@ -152,7 +154,9 @@ export const getHeaders = async (config: OpenAPIConfig, options: ApiRequestOptio
         resolve(options, config.HEADERS),
     ]);
 
+    // In browser, FormData doesn't have getHeaders; this is a no-op there. In Node, some adapters expose it.
     const formHeaders = typeof formData?.getHeaders === 'function' && formData?.getHeaders() || {}
+    // const formHeaders = typeof (formData as any)?.getHeaders === 'function' && (formData as any)?.getHeaders() || {}
 
     const headers = Object.entries({
         Accept: 'application/json',

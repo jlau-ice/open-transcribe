@@ -50,3 +50,4 @@ export { PostFavourControllerService } from './services/PostFavourControllerServ
 export { PostThumbControllerService } from './services/PostThumbControllerService';
 export { UserControllerService } from './services/UserControllerService';
 export { WxMpControllerService } from './services/WxMpControllerService';
+export { AudioFileControllerService } from './services/AudioFileControllerService'

@@ -1,13 +1,19 @@
 package com.carbon.audio.service;
 
-import java.util.List;
-
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.carbon.audio.model.entity.AudioFile;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 音频文件Service接口
  */
-public interface AudioFileService {
+public interface AudioFileService extends IService<AudioFile> {
+
+
+    void addAudioFile(MultipartFile file, HttpServletRequest request);
     /**
      * 查询音频文件
      *
