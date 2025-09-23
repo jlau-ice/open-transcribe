@@ -10,8 +10,10 @@
      "paths": {
        "@/*": ["src/*"]
      },
-     "allowSyntheticDefaultImports": true
+     "allowSyntheticDefaultImports": true,
+     "lib": [ "dom", "es5", "es2015.promise" ,"es2015", "es2017"],
    },
+   
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue",],
   "exclude": ["node_modules", "dist"]
 }

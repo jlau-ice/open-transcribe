@@ -29,7 +29,7 @@
             </svg>
             <span class="text-[#FFF]">开始录音</span>
           </div>
-          <a-upload :custom-request="handleUpload" :with-credentials="true">
+          <a-upload :custom-request="handleUpload" class="flex flex-col !w-[328px]" :with-credentials="true">
             <template #upload-button>
               <div class="text-[#222226] p-[10px] flex justify-center items-center gap-[10px] mt-[12px] cursor-pointer bg-[#ececee] hover:bg-[#f5f5f5] rounded-[10px] min-w-[328px] h-[48px]">
                 <icon-upload />
@@ -63,10 +63,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { AudioFileControllerService } from '@/api'
-const handleUpload = ({ onProgress, onError, onSuccess, fileItem }) => {
+const handleUpload = async ({ onProgress, onError, onSuccess, fileItem }) => {
   // fileItem.file is already a File (inherits from Blob) with name/type
   const file: File = fileItem.file as File
-  AudioFileControllerService.uploadUsingPost(file)
+  await AudioFileControllerService.uploadUsingPost(file)
     .then((res) => {
       onSuccess && onSuccess(res)
     })
@@ -76,4 +76,10 @@ const handleUpload = ({ onProgress, onError, onSuccess, fileItem }) => {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+:deep() {
+  .arco-upload-list-item.arco-upload-list-item-done {
+    margin-top: 10px !important;
+  }
+}
+</style>
