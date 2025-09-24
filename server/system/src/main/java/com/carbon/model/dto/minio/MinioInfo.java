@@ -28,6 +28,7 @@ public class MinioInfo {
     public MinioInfo(String bucketName, String fileName, String fileSize) {
         this.bucketName = bucketName;
         this.fileName = fileName;
+        this.url = fileName;
         this.fileSize = fileSize;
     }
 

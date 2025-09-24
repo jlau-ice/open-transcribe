@@ -65,7 +65,10 @@ knife4j:
 com:
   carbon:
     minio:
-      endPoint: http://127.0.0.1:9000 # minio服务地址
+      endPoint: http://127.0.0.1:4568 # minio服务地址
       bucketName: carbon  #文件库名称
       accessKey: minio_h2tzp6 # 用户名
       secretKey: minio_Sfh2Zr # 密码 密码
+    snowflake:
+      dataCenterId: 0
+      workerId: 1

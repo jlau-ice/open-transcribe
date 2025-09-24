@@ -6,8 +6,10 @@ import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.service.AudioFileService;
 import com.carbon.common.ErrorCode;
 import com.carbon.exception.BusinessException;
+import com.carbon.model.dto.minio.MinioInfo;
 import com.carbon.model.entity.User;
 import com.carbon.service.UserService;
+import com.carbon.utils.MinioUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,11 +34,18 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
 
     private final UserService userService;
 
+    private final MinioUtil minioUtil;
+
+    public static final String FILE_PATH = "audio";
+
 
     @Autowired
-    public AudioFileServiceImpl(AudioFileMapper audioFileMapper, UserService userService) {
+    public AudioFileServiceImpl(AudioFileMapper audioFileMapper,
+                                UserService userService,
+                                MinioUtil minioUtil) {
         this.audioFileMapper = audioFileMapper;
         this.userService = userService;
+        this.minioUtil = minioUtil;
     }
 
 
@@ -54,9 +63,10 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         audioFile.setUserId(userId);
         audioFile.setFileName(file.getName());
         // 调用minio 返回的路径
+        MinioInfo upload = minioUtil.upload(file, FILE_PATH);
         audioFile.setFileSize(file.getSize());
         audioFile.setFileType(file.getContentType());
-        audioFile.setFilePath("minio service return");
+        audioFile.setFilePath(upload.getFileName());
         this.save(audioFile);
     }
 
