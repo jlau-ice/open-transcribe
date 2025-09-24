@@ -1,9 +1,8 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
-import type { OrderItem } from './OrderItem';
-import type { PostVO } from './PostVO';
+import type { OrderItem } from '@/api';
+import type { PostVO } from '@/api';
 export type Page_PostVO_ = {
     countId?: string;
     current?: number;

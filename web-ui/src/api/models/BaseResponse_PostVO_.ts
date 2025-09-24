@@ -1,8 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
-import type { PostVO } from './PostVO';
+import type { PostVO } from '@/api';
 export type BaseResponse_PostVO_ = {
     code?: number;
     data?: PostVO;

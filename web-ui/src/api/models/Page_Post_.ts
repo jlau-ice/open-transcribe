@@ -1,9 +1,8 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
-import type { OrderItem } from './OrderItem';
-import type { Post } from './Post';
+import type { OrderItem } from '@/api';
+import type { Post } from '@/api';
 export type Page_Post_ = {
     countId?: string;
     current?: number;

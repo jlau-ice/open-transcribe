@@ -1,8 +1,7 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
-import type { User } from './User';
+import type { User } from '@/api';
 export type BaseResponse_User_ = {
     code?: number;
     data?: User;
