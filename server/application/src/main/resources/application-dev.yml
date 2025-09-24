@@ -20,8 +20,8 @@ spring:
   # 文件上传
   servlet:
     multipart:
-      # 大小限制
-      max-file-size: 10MB
+      max-file-size: 1024MB
+      max-request-size: 1024MB
 # 微信相关
 wx:
   # 微信公众平台

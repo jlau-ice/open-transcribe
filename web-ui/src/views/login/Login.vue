@@ -34,7 +34,7 @@ import { reactive, ref } from 'vue'
 import type { UserLoginRequest } from '@/api'
 import { UserControllerService } from '@/api'
 import type { FormInstance } from '@arco-design/web-vue'
-import message from '@arco-design/web-vue/es/message'
+import { Message } from '@arco-design/web-vue'
 import { useUserStore } from '@/store/user'
 const userStore = useUserStore()
 
@@ -57,11 +57,11 @@ const handleLogin = async () => {
     if (isValid) return
     const res = await UserControllerService.userLoginUsingPost(form)
     if (res.code === 200) {
-      message.success('登录成功')
+      Message.success('登录成功')
       await userStore.fetchLoginUser()
       await router.push({ path: '/home' })
     } else {
-      message.error(res.message)
+      Message.error(res.message)
     }
   } catch (err) {
     console.log('表单校验失败:', err)
