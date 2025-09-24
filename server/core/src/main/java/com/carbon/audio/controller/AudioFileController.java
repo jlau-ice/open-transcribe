@@ -69,4 +69,32 @@ public class AudioFileController {
         Page<AudioFileVO> page = audioFileService.listAudioFileByPage(request);
         return ResultUtils.success(page);
     }
+
+    /**
+     * 根据id查询音频文件
+     *
+     * @param id id
+     * @return AudioFileVO
+     */
+    @GetMapping("/get/vo/{id}")
+    @Log(title = "获取文件", businessType = BusinessType.SELECT)
+    public BaseResponse<AudioFileVO> getAudioFileVOById(@PathVariable("id") Long id) {
+        AudioFileVO res = audioFileService.selectAudioFileVOById(id);
+        return ResultUtils.success(res);
+    }
+
+
+    /**
+     * 删除音频文件
+     *
+     * @param id 音频文件id
+     * @return 删除结果
+     */
+    @DeleteMapping("/delete/{id}")
+    @Log(title = "删除音频文件", businessType = BusinessType.DELETE)
+    public BaseResponse<String> deleteAudioFile(@PathVariable("id") Long id) {
+        audioFileService.deleteById(id);
+        return ResultUtils.success();
+    }
+
 }

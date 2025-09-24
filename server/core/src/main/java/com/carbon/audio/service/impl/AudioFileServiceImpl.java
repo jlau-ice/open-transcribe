@@ -121,6 +121,33 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
     }
 
     /**
+     * 根据id查询音频文件
+     *
+     * @param id id
+     * @return AudioFileVO
+     */
+    @Override
+    public AudioFileVO selectAudioFileVOById(Long id) {
+        AudioFile audioFile = audioFileMapper.selectById(id);
+        return AudioFileVO.objToVo(audioFile);
+    }
+
+
+    /**
+     * 删除音频文件
+     *
+     * @param id 音频文件id
+     */
+    @Override
+    public void deleteById(Long id) {
+        AudioFile audioFile = audioFileMapper.selectById(id);
+        ThrowUtils.throwIf(audioFile == null, ErrorCode.NOT_FOUND_ERROR, "音频文件不存在");
+        boolean b = this.removeById(audioFile.getId());
+        ThrowUtils.throwIf(!b, ErrorCode.OPERATION_ERROR, "删除失败");
+        minioUtil.removeObject(audioFile.getFilePath());
+    }
+
+    /**
      * 查询音频文件
      *
      * @param id 音频文件主键

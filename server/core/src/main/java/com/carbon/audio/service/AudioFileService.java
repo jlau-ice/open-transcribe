@@ -27,6 +27,7 @@ public interface AudioFileService extends IService<AudioFile> {
 
     /**
      * 分页查询音频文件
+     *
      * @param request query
      * @return Page<AudioFileVO>
      */
@@ -34,6 +35,7 @@ public interface AudioFileService extends IService<AudioFile> {
 
     /**
      * 获取所有文件
+     *
      * @param request query
      * @return List<AudioFileVO>
      */
@@ -46,6 +48,21 @@ public interface AudioFileService extends IService<AudioFile> {
      * @return QueryWrapper<AudioFile> 条件Wrapper
      */
     QueryWrapper<AudioFile> getQueryWrapper(AudioFileQueryRequest audioFileQueryRequest);
+
+    /**
+     * 根据id查询音频文件
+     *
+     * @param id id
+     * @return AudioFileVO
+     */
+    AudioFileVO selectAudioFileVOById(Long id);
+
+    /**
+     * 删除音频文件
+     *
+     * @param id 音频文件id
+     */
+    void deleteById(Long id);
 
     /**
      * 查询音频文件
