@@ -2,6 +2,7 @@ package com.carbon.model.dto.file;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -16,5 +17,6 @@ public class UploadFileRequest implements Serializable {
      */
     private String biz;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }

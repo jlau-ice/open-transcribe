@@ -2,6 +2,7 @@ package com.carbon.model.vo;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -53,5 +54,6 @@ public class UserVO implements Serializable {
      */
     private Date createTime;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }

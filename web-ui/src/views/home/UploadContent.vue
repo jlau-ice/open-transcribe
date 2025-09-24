@@ -29,7 +29,15 @@
             </svg>
             <span class="text-[#FFF]">开始录音</span>
           </div>
-          <a-upload v-model="fileList" :on-before-upload="beforeUpload" :custom-request="handleUpload" class="flex flex-col !w-[328px]" :with-credentials="true" accept=".mp3,.mpga,.oga,.mogg,.aac,.webm,.opus,.flac,.wav,.m4a,.ogg" :file-list="fileList">
+          <a-upload
+            v-model="fileList"
+            :on-before-upload="beforeUpload"
+            :custom-request="handleUpload"
+            class="flex flex-col !w-[328px]"
+            :with-credentials="true"
+            accept=".mp3,.mpga,.oga,.mogg,.aac,.webm,.opus,.flac,.wav,.m4a,.ogg"
+            :file-list="fileList"
+          >
             <template #upload-button>
               <div class="text-[#222226] p-[10px] flex justify-center items-center gap-[10px] mt-[12px] cursor-pointer bg-[#ececee] hover:bg-[#f5f5f5] rounded-[10px] min-w-[328px] h-[48px]">
                 <icon-upload />
@@ -77,10 +85,10 @@ const allowTypes = [
 const fileList = ref([])
 
 /**
- * 校验文件合法,文件类型,文件大小 
+ * 校验文件合法,文件类型,文件大小
  * @param file - File对象
  */
-const beforeUpload = (file: File ) => {
+const beforeUpload = (file: File) => {
   if (!allowTypes.includes(file.type)) {
     Message.error('不支持该文件类型')
     return false

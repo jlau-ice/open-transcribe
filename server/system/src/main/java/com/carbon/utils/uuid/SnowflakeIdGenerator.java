@@ -15,15 +15,6 @@ public class SnowflakeIdGenerator {
     // 上次生成ID的时间戳
     private long lastTimestamp = -1L;
 
-    // 时间戳左移位数
-    private final long timestampLeftShift = 22L;
-    // 数据中心ID左移位数
-    private final long dataCenterIdShift = 17L;
-    // 机器ID左移位数
-    private final long workerIdShift = 12L;
-    // 序列掩码
-    private final long sequenceMask = 4095L;
-
     public SnowflakeIdGenerator(long dataCenterId, long workerId) {
         if (dataCenterId < 0 || dataCenterId > 31 || workerId < 0 || workerId > 31) {
             throw new IllegalArgumentException("DataCenter ID and Worker ID must be between 0 and 31");
@@ -43,6 +34,8 @@ public class SnowflakeIdGenerator {
         }
 
         if (timestamp == lastTimestamp) {
+            // 序列掩码
+            long sequenceMask = 4095L;
             sequence = (sequence + 1) & sequenceMask;
             if (sequence == 0) {
                 timestamp = waitNextMillis(timestamp);
@@ -53,6 +46,12 @@ public class SnowflakeIdGenerator {
 
         lastTimestamp = timestamp;
 
+        // 时间戳左移位数
+        long timestampLeftShift = 22L;
+        // 数据中心ID左移位数
+        long dataCenterIdShift = 17L;
+        // 机器ID左移位数
+        long workerIdShift = 12L;
         return ((timestamp << timestampLeftShift) | (dataCenterId << dataCenterIdShift) | (workerId << workerIdShift) | sequence);
     }
 

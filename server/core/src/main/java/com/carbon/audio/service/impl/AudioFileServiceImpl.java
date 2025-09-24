@@ -1,15 +1,25 @@
 package com.carbon.audio.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.carbon.audio.mapper.AudioFileMapper;
+import com.carbon.audio.model.dto.AudioFileQueryRequest;
 import com.carbon.audio.model.entity.AudioFile;
+import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
 import com.carbon.common.ErrorCode;
+import com.carbon.constant.CommonConstant;
 import com.carbon.exception.BusinessException;
+import com.carbon.exception.ThrowUtils;
 import com.carbon.model.dto.minio.MinioInfo;
 import com.carbon.model.entity.User;
 import com.carbon.service.UserService;
 import com.carbon.utils.MinioUtil;
+import com.carbon.utils.SqlUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.carbon.constant.UserConstant.USER_LOGIN_STATE;
 
@@ -68,6 +79,45 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         audioFile.setFileType(file.getContentType());
         audioFile.setFilePath(upload.getFileName());
         this.save(audioFile);
+    }
+
+    @Override
+    public Page<AudioFileVO> listAudioFileByPage(AudioFileQueryRequest request) {
+        Page<AudioFile> page = new Page<>(request.getCurrent(), request.getPageSize());
+        Page<AudioFile> res = this.page(page, getQueryWrapper(request));
+        //return AudioFileVO.objToVo(res);
+        Page<AudioFileVO> voPage = new Page<>(res.getCurrent(), res.getSize(), res.getTotal());
+        List<AudioFileVO> voList = res.getRecords().stream()
+                .map(AudioFileVO::objToVo)
+                .collect(Collectors.toList());
+        voPage.setRecords(voList);
+        return voPage;
+    }
+
+    @Override
+    public List<AudioFileVO> listAudioFile(AudioFileQueryRequest request) {
+        return List.of();
+    }
+
+    @Override
+    public QueryWrapper<AudioFile> getQueryWrapper(AudioFileQueryRequest audioFileQueryRequest) {
+        ThrowUtils.throwIf(audioFileQueryRequest == null, ErrorCode.PARAMS_ERROR, "请求参数为空");
+        QueryWrapper<AudioFile> queryWrapper = new QueryWrapper<>();
+        Long id = audioFileQueryRequest.getId();
+        Long userId = audioFileQueryRequest.getUserId();
+        String fileName = audioFileQueryRequest.getFileName();
+        String fileType = audioFileQueryRequest.getFileType();
+        Integer status = audioFileQueryRequest.getStatus();
+        String sortField = audioFileQueryRequest.getSortField();
+        String sortOrder = audioFileQueryRequest.getSortOrder();
+        queryWrapper.eq(null != id, "id", id);
+        queryWrapper.eq(null != userId, "user_id", userId);
+        queryWrapper.like(StringUtils.isNotBlank(fileName), "file_name", fileName);
+        queryWrapper.like(StringUtils.isNotBlank(fileType), "file_type", fileType);
+        queryWrapper.eq(null != status, "status", status);
+        queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC),
+                sortField);
+        return queryWrapper;
     }
 
     /**

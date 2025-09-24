@@ -2,6 +2,7 @@ package com.carbon.model.dto.user;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -25,5 +26,6 @@ public class UserUpdateMyRequest implements Serializable {
      */
     private String userProfile;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }

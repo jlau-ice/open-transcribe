@@ -1,7 +1,11 @@
 package com.carbon.audio.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.carbon.audio.model.dto.AudioFileQueryRequest;
 import com.carbon.audio.model.entity.AudioFile;
+import com.carbon.audio.model.vo.AudioFileVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,7 +17,36 @@ import java.util.List;
 public interface AudioFileService extends IService<AudioFile> {
 
 
+    /**
+     * 新增音频文件
+     *
+     * @param file    文件
+     * @param request cookie
+     */
     void addAudioFile(MultipartFile file, HttpServletRequest request);
+
+    /**
+     * 分页查询音频文件
+     * @param request query
+     * @return Page<AudioFileVO>
+     */
+    Page<AudioFileVO> listAudioFileByPage(AudioFileQueryRequest request);
+
+    /**
+     * 获取所有文件
+     * @param request query
+     * @return List<AudioFileVO>
+     */
+    List<AudioFileVO> listAudioFile(AudioFileQueryRequest request);
+
+    /**
+     * 获取查询条件
+     *
+     * @param audioFileQueryRequest 查询实体
+     * @return QueryWrapper<AudioFile> 条件Wrapper
+     */
+    QueryWrapper<AudioFile> getQueryWrapper(AudioFileQueryRequest audioFileQueryRequest);
+
     /**
      * 查询音频文件
      *

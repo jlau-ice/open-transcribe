@@ -2,6 +2,7 @@ package com.carbon.model.dto.postfavour;
 
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -15,5 +16,6 @@ public class PostFavourAddRequest implements Serializable {
      */
     private Long postId;
 
+    @Serial
     private static final long serialVersionUID = 1L;
 }
