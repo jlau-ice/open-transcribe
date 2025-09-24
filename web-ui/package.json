@@ -7,7 +7,8 @@
     "dev": "vite --open",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
-    "generate:api": "openapi --input http://127.0.0.1:8101/api/v2/api-docs --output generated --client axios --exportSchemas true --remove-base-path"
+    "generate:api": "openapi --input http://127.0.0.1:8101/api/v2/api-docs --output generated --client axios --exportSchemas true --remove-base-path",
+    "openapi": "node openapi.config.js"
   },
   "dependencies": {
     "@vue/eslint-config-prettier": "^10.2.0",
@@ -19,6 +20,7 @@
     "vue-router": "^4.5.1"
   },
   "devDependencies": {
+    "@umijs/openapi": "^1.13.0",
     "@arco-design/web-vue": "^2.57.0",
     "@types/node": "^24.3.1",
     "@vitejs/plugin-vue": "^6.0.1",
