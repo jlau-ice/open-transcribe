@@ -9,7 +9,7 @@
       <div class="h-[1px] w-full bg-[#eaebec] my-[15px]" />
       <span class="text-[#8c8c8c]">最近使用</span>
       <div class="mt-[10px] truncate flex flex-col gap-[5px]">
-        <template v-for="(item, index) in recentList" :key="index">
+        <template v-for="(item, index) in audioList" :key="index">
           <div class="p-[5px] flex items-center gap-[10px] rounded-[6px] cursor-pointer hover:bg-[#f1f1f3]" :class="[{ 'bg-[#edeaf7]': currentAudio?.id === item.id }]" @click="handelClick(item)">
             <svg fill="none" width="20" height="20" viewBox="0 0 20 20" style="min-width: 20px; min-height: 20px">
               <rect width="20" height="20" rx="3.33333" fill="url(#paint0_linear_112_9397_:r45l:)"></rect>
@@ -31,8 +31,8 @@
               </defs>
             </svg>
             <div class="flex flex-col">
-              <span class="text-[#404040] leading-5 text-[12px] w-[180px] block truncate">（示例）5 个日常生产力小贴士 个日常生产力小贴士 个日常生产力小贴士</span>
-              <span class="text-[#8c8c8c] leading-5 text-[12px]">4 小时前</span>
+              <span class="text-[#404040] leading-5 text-[12px] w-[180px] block truncate">{{ item?.fileName }}</span>
+              <span class="text-[#8c8c8c] leading-5 text-[12px]">{{ hoursAgo(item?.createTime) }}</span>
             </div>
           </div>
         </template>
@@ -42,13 +42,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const recentList = ref([{ id: 1 }, { id: 2 }, { id: 3 }])
-
-const currentAudio = ref({})
-const handelClick = (item) => {
+import { onMounted, ref } from 'vue'
+import { AudioFileControllerService } from '@/api'
+import { type AudioFileVO } from '@/api'
+import { useUserStore } from '@/store/user'
+const userStore = useUserStore()
+const audioList = ref([])
+const currentAudio = ref<AudioFileVO>({})
+onMounted(() => {
+  getAudioList()
+})
+const handelClick = (item: AudioFileVO) => {
   currentAudio.value = item
 }
+const getAudioList = () => {
+  const query = {
+    userId: userStore.loginUser.id,
+  }
+  AudioFileControllerService.listAudioFileByPageUsingPost(query).then((res) => {
+    if (res.code === 200) {
+      audioList.value = res.data.records || []
+    }
+  })
+}
+
+function hoursAgo(createdAt: string | number | Date): string {
+  const createdTime = new Date(createdAt).getTime()
+  const now = Date.now()
+  const diffMs = now - createdTime
+  if (diffMs < 0) return '时间不合法'
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+  if (diffHours === 0) {
+    return '不到1小时前'
+  }
+  return `${diffHours}小时前`
+}
+
+defineExpose({
+  getAudioList,
+})
 </script>
 
 <style lang="scss" scoped></style>

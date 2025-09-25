@@ -99,11 +99,15 @@ const beforeUpload = (file: File) => {
   }
   return true
 }
+
+const emit = defineEmits(['uploadSuccess'])
+
 const handleUpload = async ({ onProgress, onError, onSuccess, fileItem }) => {
   // fileItem.file is already a File (inherits from Blob) with name/type
   const file: File = fileItem.file as File
   await AudioFileControllerService.uploadUsingPost(file)
     .then((res) => {
+      emit('uploadSuccess')
       onSuccess && onSuccess(res)
     })
     .catch((err) => {

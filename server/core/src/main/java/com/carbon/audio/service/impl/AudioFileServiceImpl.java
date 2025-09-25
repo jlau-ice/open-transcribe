@@ -70,7 +70,7 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         currentUser = userService.getById(userId);
         AudioFile audioFile = new AudioFile();
         audioFile.setUserId(currentUser.getId());
-        audioFile.setFileName(file.getName());
+        audioFile.setFileName(file.getOriginalFilename());
         // 调用minio 返回的路径
         MinioInfo upload = minioUtil.upload(file, FILE_PATH);
         audioFile.setFileSize(file.getSize());
