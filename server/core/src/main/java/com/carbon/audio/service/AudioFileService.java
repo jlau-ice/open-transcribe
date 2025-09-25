@@ -23,7 +23,7 @@ public interface AudioFileService extends IService<AudioFile> {
      * @param file    文件
      * @param request cookie
      */
-    void addAudioFile(MultipartFile file, HttpServletRequest request);
+    AudioFileVO addAudioFile(MultipartFile file, HttpServletRequest request);
 
     /**
      * 分页查询音频文件

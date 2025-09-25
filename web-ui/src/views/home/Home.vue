@@ -1,7 +1,7 @@
 <template>
   <div class="flex">
-    <side-bar ref="sideBarRef" />
-    <upload-content @upload-success="uploadSuccess"/>
+    <side-bar @select-audio="handelSelectAudio" ref="sideBarRef" />
+    <upload-content @upload-success="uploadSuccess" ref="uploadContentRef" />
   </div>
 </template>
 
@@ -9,9 +9,14 @@
 import { ref } from 'vue'
 import SideBar from './SideBar.vue'
 import UploadContent from './UploadContent.vue'
+import { AudioFileVO } from '@/api'
 const sideBarRef = ref(null)
+const uploadContentRef = ref(null)
 const uploadSuccess = () => {
   sideBarRef.value.getAudioList()
+}
+const handelSelectAudio = (item: AudioFileVO) => {
+  uploadContentRef.value.setCurrentAudio(item)
 }
 </script>
 <style scoped></style>

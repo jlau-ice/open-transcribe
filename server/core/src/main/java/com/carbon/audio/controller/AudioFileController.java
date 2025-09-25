@@ -38,9 +38,8 @@ public class AudioFileController {
      */
     @PostMapping("/upload")
     @Log(title = "上传音频文件", businessType = BusinessType.INSERT)
-    public BaseResponse<String> upload(@RequestPart("file") MultipartFile file, @ApiIgnore HttpServletRequest request) {
-        audioFileService.addAudioFile(file, request);
-        return ResultUtils.success();
+    public BaseResponse<AudioFileVO> upload(@RequestPart("file") MultipartFile file, @ApiIgnore HttpServletRequest request) {
+        return ResultUtils.success(audioFileService.addAudioFile(file, request));
     }
 
 

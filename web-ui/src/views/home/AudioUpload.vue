@@ -84,7 +84,7 @@ const handleUpload = async ({ onError, onSuccess, fileItem }) => {
   if (res.code === 200) {
     onSuccess()
     Message.success('上传成功')
-    emit('uploadSuccess', fileItem)
+    emit('uploadSuccess', res.data)
   } else {
     onError()
     Message.error(res.message)

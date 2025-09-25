@@ -6,6 +6,10 @@
           <icon-search />
         </template>
       </a-input>
+      <div class="text-[#8c8c8c] cursor-pointer hover:bg-[#f2f3f5] p-2.5 mt-2 border-solid border-[1px] rounded-[6px] border-[#eaebec]" @click="toUpload">
+        <icon-upload />
+        上传
+      </div>
       <div class="h-[1px] w-full bg-[#eaebec] my-[15px]" />
       <span class="text-[#8c8c8c]">最近使用</span>
       <div class="mt-[10px] truncate flex flex-col gap-[5px]">
@@ -34,18 +38,19 @@ const currentAudio = ref<AudioFileVO>({})
 onMounted(() => {
   getAudioList()
 })
+const emit = defineEmits(['select-audio'])
 const handelClick = (item: AudioFileVO) => {
   currentAudio.value = item
+  emit('select-audio', item)
 }
-const getAudioList = () => {
+const getAudioList = async () => {
   const query = {
     userId: userStore.loginUser.id,
   }
-  AudioFileControllerService.listAudioFileByPageUsingPost(query).then((res) => {
-    if (res.code === 200) {
-      audioList.value = res.data.records || []
-    }
-  })
+  const res = await AudioFileControllerService.listAudioFileUsingPost(query)
+  if (res.code === 200) {
+    audioList.value = res.data || []
+  }
 }
 
 function hoursAgo(createdAt: string | number | Date): string {
@@ -58,6 +63,10 @@ function hoursAgo(createdAt: string | number | Date): string {
     return '不到1小时前'
   }
   return `${diffHours}小时前`
+}
+
+const toUpload = () => {
+  emit('select-audio', null)
 }
 
 defineExpose({
