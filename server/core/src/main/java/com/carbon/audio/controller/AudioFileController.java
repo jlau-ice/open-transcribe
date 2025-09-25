@@ -50,9 +50,9 @@ public class AudioFileController {
      * @param request query
      * @return List<AudioFileVO>
      */
-    @GetMapping("/list/vo")
+    @PostMapping("/list/vo")
     @Log(title = "获取所有文件", businessType = BusinessType.SELECT)
-    public BaseResponse<List<AudioFileVO>> listAudioFile(AudioFileQueryRequest request) {
+    public BaseResponse<List<AudioFileVO>> listAudioFile(@RequestBody AudioFileQueryRequest request) {
         List<AudioFileVO> res = audioFileService.listAudioFile(request);
         return ResultUtils.success(res);
     }
@@ -63,9 +63,9 @@ public class AudioFileController {
      * @param request query
      * @return Page<AudioFileVO>
      */
-    @GetMapping("/list/page/vo")
+    @PostMapping("/list/page/vo")
     @Log(title = "获取文件带分页", businessType = BusinessType.SELECT)
-    public BaseResponse<Page<AudioFileVO>> listAudioFileByPage(AudioFileQueryRequest request) {
+    public BaseResponse<Page<AudioFileVO>> listAudioFileByPage(@RequestBody AudioFileQueryRequest request) {
         Page<AudioFileVO> page = audioFileService.listAudioFileByPage(request);
         return ResultUtils.success(page);
     }

@@ -65,13 +65,11 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
+        ThrowUtils.throwIf((currentUser == null || currentUser.getId() == null),ErrorCode.NOT_LOGIN_ERROR);
         long userId = currentUser.getId();
         currentUser = userService.getById(userId);
-        if (currentUser == null) {
-            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
-        }
         AudioFile audioFile = new AudioFile();
-        audioFile.setUserId(userId);
+        audioFile.setUserId(currentUser.getId());
         audioFile.setFileName(file.getName());
         // 调用minio 返回的路径
         MinioInfo upload = minioUtil.upload(file, FILE_PATH);

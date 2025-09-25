@@ -6,10 +6,15 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { AudioFileQueryRequest } from './models/AudioFileQueryRequest';
+export type { AudioFileVO } from './models/AudioFileVO';
+export type { BaseResponse_AudioFileVO_ } from './models/BaseResponse_AudioFileVO_';
 export type { BaseResponse_boolean_ } from './models/BaseResponse_boolean_';
 export type { BaseResponse_int_ } from './models/BaseResponse_int_';
+export type { BaseResponse_List_AudioFileVO_ } from './models/BaseResponse_List_AudioFileVO_';
 export type { BaseResponse_LoginUserVO_ } from './models/BaseResponse_LoginUserVO_';
 export type { BaseResponse_long_ } from './models/BaseResponse_long_';
+export type { BaseResponse_Page_AudioFileVO_ } from './models/BaseResponse_Page_AudioFileVO_';
 export type { BaseResponse_Page_Post_ } from './models/BaseResponse_Page_Post_';
 export type { BaseResponse_Page_PostVO_ } from './models/BaseResponse_Page_PostVO_';
 export type { BaseResponse_Page_User_ } from './models/BaseResponse_Page_User_';
@@ -21,6 +26,7 @@ export type { BaseResponse_UserVO_ } from './models/BaseResponse_UserVO_';
 export type { DeleteRequest } from './models/DeleteRequest';
 export type { LoginUserVO } from './models/LoginUserVO';
 export type { OrderItem } from './models/OrderItem';
+export type { Page_AudioFileVO_ } from './models/Page_AudioFileVO_';
 export type { Page_Post_ } from './models/Page_Post_';
 export type { Page_PostVO_ } from './models/Page_PostVO_';
 export type { Page_User_ } from './models/Page_User_';
@@ -43,10 +49,10 @@ export type { UserUpdateMyRequest } from './models/UserUpdateMyRequest';
 export type { UserUpdateRequest } from './models/UserUpdateRequest';
 export type { UserVO } from './models/UserVO';
 
+export { AudioFileControllerService } from './services/AudioFileControllerService';
 export { FileControllerService } from './services/FileControllerService';
 export { PostControllerService } from './services/PostControllerService';
 export { PostFavourControllerService } from './services/PostFavourControllerService';
 export { PostThumbControllerService } from './services/PostThumbControllerService';
 export { UserControllerService } from './services/UserControllerService';
 export { WxMpControllerService } from './services/WxMpControllerService';
-export { AudioFileControllerService } from './services/AudioFileControllerService'
