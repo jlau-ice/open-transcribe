@@ -1,0 +1,22 @@
+# config.yaml
+#消息队列配置
+rocketmq:
+  nameserver: "192.168.172.214:9876"  # RocketMQ NameServer地址
+  topic: "asr_transfer_topic"            # 订阅的主题
+  consumer_group: "asr_consumer_group"  # 消费者组
+  tag: "tag_asr_transfer_txt"                      # 订阅的标签
+    # 添加生产者配置
+  producer_group: "asr_producer_group" # 生产者组
+  send_topic: "asr_result_topic"       # 发送结果的主题
+# 线程池配置
+thread_pool:
+  max_workers: 10
+# MinIO配置
+minio:
+  endpoint: "190.168.172.209:9998"
+  access_key: "tiger"
+  secret_key: "tiger123"
+  secure: false  # 是否使用HTTPS
+# Whisper模型配置
+whisper:
+  model_type: "base"  # 可选: tiny, base, small, medium, large,turbo
