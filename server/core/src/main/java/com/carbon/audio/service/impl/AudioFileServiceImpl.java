@@ -61,7 +61,7 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
 
 
     @Override
-    public void addAudioFile(MultipartFile file, HttpServletRequest request) {
+    public AudioFileVO addAudioFile(MultipartFile file, HttpServletRequest request) {
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
@@ -77,6 +77,7 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         audioFile.setFileType(file.getContentType());
         audioFile.setFilePath(upload.getFileName());
         this.save(audioFile);
+        return AudioFileVO.objToVo(audioFile);
     }
 
     @Override
@@ -94,7 +95,10 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
 
     @Override
     public List<AudioFileVO> listAudioFile(AudioFileQueryRequest request) {
-        return List.of();
+        request.setSortField("create_time");
+        request.setSortOrder(CommonConstant.SORT_ORDER_DESC);
+        QueryWrapper<AudioFile> queryWrapper = this.getQueryWrapper(request);
+        return this.list(queryWrapper).stream().map(AudioFileVO::objToVo).toList();
     }
 
     @Override
