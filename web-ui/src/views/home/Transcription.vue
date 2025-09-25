@@ -9,7 +9,7 @@
         <span class="text-[#262626] text-[18px] font-bold">NN:NN</span>
       </div>
       <span class="pt-3 pb-5 text-[13px] text-[#8C8C8C]">开始转录后，转录过程无法取消。请确保需要转录的内容后再开始操作。</span>
-      <div class="flex items-center justify-center h-[48px] w-[328px] rounded-[8px] gap-[10px] bg-[#222226] hover:bg-[#000000] text-[#FFF] cursor-pointer">
+      <div class="flex items-center justify-center h-[48px] w-[328px] rounded-[8px] gap-[10px] bg-[#222226] hover:bg-[#000000] text-[#FFF] cursor-pointer" @click="startTranscription">
         <img src="@/assets/file/transcribe.svg" alt="transcribe"/>
         <span>开始转录</span>
       </div>
@@ -35,7 +35,16 @@
 </template>
 
 <script setup lang="ts">
-
+const props = defineProps({
+  file: {
+    type: Object,
+    default: () => {}
+  }
+})
+const emit = defineEmits(['transcription'])
+const startTranscription = () => {
+  emit('transcription', props.file)
+}
 </script>
 
 <style scoped lang="scss">
