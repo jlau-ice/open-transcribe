@@ -66,3 +66,21 @@ create table if not exists transcription_task
     update_time       datetime default CURRENT_TIMESTAMP not null on update CURRENT_TIMESTAMP comment '更新时间',
     is_delete         tinyint  default 0                 not null comment '是否删除'
 ) comment '音频文件' collate = utf8mb4_unicode_ci;
+
+
+CREATE TABLE `transcribe_result`
+(
+    `id`          bigint(20) NOT NULL COMMENT '主键',
+    `audio_id`    bigint(20)          DEFAULT NULL COMMENT '音频id',
+    `result_text` text                DEFAULT NULL COMMENT '转录结果',
+    `status`      varchar(128)        DEFAULT NULL COMMENT '状态',
+    `start_time`  datetime            DEFAULT NULL COMMENT '任务开始时间',
+    `end_time`    datetime            DEFAULT NULL COMMENT '任务结束时间',
+    `temp1`       varchar(255)        DEFAULT NULL COMMENT '保留字段1',
+    `temp2`       varchar(255)        DEFAULT NULL COMMENT '保留字段2',
+    `create_time` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time` datetime   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `is_delete`   tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否删除',
+    PRIMARY KEY (`id`)
+) ENGINE = InnoDB COMMENT ='转录结果表'
+  collate = utf8mb4_unicode_ci;

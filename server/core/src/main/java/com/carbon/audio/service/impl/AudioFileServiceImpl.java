@@ -1,7 +1,7 @@
 package com.carbon.audio.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.carbon.audio.mapper.AudioFileMapper;
@@ -9,18 +9,16 @@ import com.carbon.audio.model.dto.AudioFileQueryRequest;
 import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
-import com.carbon.audio.service.mq.AudioProducer;
 import com.carbon.common.ErrorCode;
 import com.carbon.constant.CommonConstant;
-import com.carbon.exception.BusinessException;
 import com.carbon.exception.ThrowUtils;
 import com.carbon.model.dto.minio.MinioInfo;
 import com.carbon.model.entity.User;
+import com.carbon.mq.AudioProducer;
 import com.carbon.service.UserService;
 import com.carbon.utils.MinioUtil;
 import com.carbon.utils.SqlUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +32,6 @@ import static com.carbon.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * 音频文件Service业务层处理
- *
- * @author jkr
- * @date 2025-09-22
  */
 @Service
 @Transactional
@@ -157,7 +152,14 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
     @Override
     public void transcribe(Long id) {
         AudioFile audioFile = audioFileMapper.selectById(id);
+        // 发送消息
         audioProducer.sendAudioInfo(audioFile);
+        // 更新状态
+        LambdaUpdateWrapper<AudioFile> updateWrapper = new LambdaUpdateWrapper<>();
+        updateWrapper.eq(AudioFile::getId, id)
+                .set(AudioFile::getStatus, 1);
+        audioFileMapper.update(null, updateWrapper);
+
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.carbon.audio.service.mq;
+package com.carbon.mq;
 
 
 import cn.hutool.json.JSON;

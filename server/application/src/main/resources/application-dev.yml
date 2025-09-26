@@ -65,7 +65,7 @@ knife4j:
 com:
   carbon:
     minio:
-      endPoint: http://192.168.172.209:9998
+      endPoint: http://192.168.172.214:9998
       bucketName: asr
       accessKey: tiger
       secretKey: tiger123
