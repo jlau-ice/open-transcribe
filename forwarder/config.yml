@@ -13,7 +13,7 @@ thread_pool:
   max_workers: 10
 # MinIO配置
 minio:
-  endpoint: "190.168.172.209:9998"
+  endpoint: "192.168.172.209:9998"
   access_key: "tiger"
   secret_key: "tiger123"
   secure: false  # 是否使用HTTPS

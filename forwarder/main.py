@@ -1,7 +1,8 @@
 # main.py
 from fastapi import FastAPI
-from routers import asr
-from service.rocketmq_service import get_rocketmq_service
+#from routers import asr
+#from routers import asr
+from service.rocketmq_service import RocketMQService
 from utils.thread_pool import get_thread_pool_manager
 
 app = FastAPI(title="ASR Service")
@@ -22,7 +23,7 @@ async def startup_event():
     # 初始化线程池管理器
     thread_pool_manager = get_thread_pool_manager()
     # 初始化RocketMQ服务
-    rocketmq_service = get_rocketmq_service()
+    rocketmq_service = RocketMQService.get_rocketmq_service()
     rocketmq_service.start()
 
 @app.on_event("shutdown")

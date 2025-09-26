@@ -1,0 +1,6 @@
+fastapi==0.117.1
+minio==7.2.16
+openai_whisper==20250625
+PyYAML==6.0.3
+rocketmq==0.4.4
+

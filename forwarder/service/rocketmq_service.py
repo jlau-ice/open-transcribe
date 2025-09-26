@@ -5,7 +5,7 @@ import json
 import asyncio
 from service.asr_services import synthesize
 from utils.thread_pool import get_executor
-
+   
 class RocketMQService:
     def __init__(self, config_path="config.yaml"):
         # 加载配置文件
@@ -30,7 +30,7 @@ class RocketMQService:
             self.rocketmq_config['tag'], 
             self.message_callback
         )
-    
+
     def message_callback(self, msg):
         """
         消息回调处理函数
@@ -62,7 +62,7 @@ class RocketMQService:
         """
         try:
             # 调用ASR服务处理音频
-            result_text = synthesize(text=audio_url)
+            result_text = synthesize(audio_url=audio_url)
             
             # 处理结果
             print(f"ASR处理结果: {result_text}")
@@ -110,14 +110,34 @@ class RocketMQService:
             print(f"发送结果消息时出错: {e}")
     def start(self):
         """
-        启动消费者
+        启动消费者和生产者
         """
         self.consumer.start()
-        print("RocketMQ消费者已启动")
+        self.producer.start()
+        print("RocketMQ消费者和生产者已启动")
     
     def shutdown(self):
         """
-        关闭消费者
+        关闭消费者和生产者
         """
         self.consumer.shutdown()
-        print("RocketMQ消费者已关闭")
+        self.producer.shutdown()
+        print("RocketMQ消费者和生产者已关闭")
+    
+    # 全局实例
+    _rocketmq_service = None
+
+    @classmethod
+    def get_rocketmq_service(cls, config_path="config.yaml"):
+        """
+        获取全局RocketMQ服务实例
+
+        Args:
+            config_path (str): 配置文件路径
+
+        Returns:
+            RocketMQService: RocketMQ服务实例
+        """
+        if cls._rocketmq_service is None:
+            cls._rocketmq_service = RocketMQService(config_path)
+        return cls._rocketmq_service
