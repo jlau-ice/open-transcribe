@@ -41,7 +41,7 @@ class RocketMQService:
             message_data = json.loads(message_body)
             
             # 提取音频URL
-            audio_url = message_data.get('audio_url')
+            audio_url = message_data.get('filePath')
             if audio_url:
                 # 异步处理音频转换
                 asyncio.get_event_loop().run_in_executor(
@@ -86,11 +86,11 @@ class RocketMQService:
         try:
             # 重新组装结果数据
             result_data = {
-                "request_id": original_message_data.get("request_id"),
-                "audio_url": original_message_data.get("audio_url"),
+                "request_id": original_message_data.get("id"),
+                "audio_url": original_message_data.get("filePath"),
                 "result_text": result_text,
                 "status": "success",
-                "timestamp": original_message_data.get("timestamp")
+                "timestamp": original_message_data.get("updateTime")
             }
             
             # 生成JSON格式的消息体
@@ -98,8 +98,8 @@ class RocketMQService:
             
             # 创建消息对象
             msg = Message(self.rocketmq_config.get('send_topic', 'asr_result_topic'))
-            msg.set_keys(original_message_data.get("request_id", ""))
-            msg.set_tags("asr_result")
+            msg.set_keys(original_message_data.get("id", ""))
+            msg.set_tags("tag_asr_transfer_result")
             msg.set_body(result_json)
             
             # 发送消息
