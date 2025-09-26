@@ -9,6 +9,7 @@ import com.carbon.audio.model.dto.AudioFileQueryRequest;
 import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
+import com.carbon.audio.service.mq.AudioProducer;
 import com.carbon.common.ErrorCode;
 import com.carbon.constant.CommonConstant;
 import com.carbon.exception.BusinessException;
@@ -47,16 +48,20 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
 
     private final MinioUtil minioUtil;
 
+    private final AudioProducer audioProducer;
+
     public static final String FILE_PATH = "audio";
 
 
     @Autowired
     public AudioFileServiceImpl(AudioFileMapper audioFileMapper,
                                 UserService userService,
-                                MinioUtil minioUtil) {
+                                MinioUtil minioUtil,
+                                AudioProducer audioProducer) {
         this.audioFileMapper = audioFileMapper;
         this.userService = userService;
         this.minioUtil = minioUtil;
+        this.audioProducer = audioProducer;
     }
 
 
@@ -65,7 +70,7 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         // 先判断是否已登录
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
-        ThrowUtils.throwIf((currentUser == null || currentUser.getId() == null),ErrorCode.NOT_LOGIN_ERROR);
+        ThrowUtils.throwIf((currentUser == null || currentUser.getId() == null), ErrorCode.NOT_LOGIN_ERROR);
         long userId = currentUser.getId();
         currentUser = userService.getById(userId);
         AudioFile audioFile = new AudioFile();
@@ -147,6 +152,12 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         boolean b = this.removeById(audioFile.getId());
         ThrowUtils.throwIf(!b, ErrorCode.OPERATION_ERROR, "删除失败");
         minioUtil.removeObject(audioFile.getFilePath());
+    }
+
+    @Override
+    public void transcribe(Long id) {
+        AudioFile audioFile = audioFileMapper.selectById(id);
+        audioProducer.sendAudioInfo(audioFile);
     }
 
     /**

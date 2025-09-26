@@ -64,6 +64,13 @@ public interface AudioFileService extends IService<AudioFile> {
      */
     void deleteById(Long id);
 
+
+    /**
+     * 创建转录任务
+     * @param id 音频文件id
+     */
+    void transcribe(Long id);
+
     /**
      * 查询音频文件
      *

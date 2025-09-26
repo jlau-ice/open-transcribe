@@ -5,6 +5,7 @@ import com.carbon.annotation.Log;
 import com.carbon.audio.model.dto.AudioFileQueryRequest;
 import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
+import com.carbon.audio.service.mq.AudioProducer;
 import com.carbon.common.BaseResponse;
 import com.carbon.common.BusinessType;
 import com.carbon.common.ResultUtils;
@@ -25,8 +26,7 @@ public class AudioFileController {
 
     private final AudioFileService audioFileService;
 
-    @Autowired
-    public AudioFileController(AudioFileService audioFileService) {
+    public AudioFileController(AudioFileService audioFileService,AudioProducer audioProducer) {
         this.audioFileService = audioFileService;
     }
 
@@ -96,4 +96,11 @@ public class AudioFileController {
         return ResultUtils.success();
     }
 
+
+    @PostMapping("/start/transcribe/{id}")
+    @Log(title = "开始转录", businessType = BusinessType.OTHER)
+    public BaseResponse<String> transcribe(@PathVariable("id") Long id) {
+        audioFileService.transcribe(id);
+        return ResultUtils.success();
+    }
 }

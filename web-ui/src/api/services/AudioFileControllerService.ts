@@ -109,4 +109,28 @@ export class AudioFileControllerService {
       },
     })
   }
+
+  /**
+   * transcribe
+   * @param id id
+   * @returns BaseResponse_string_ OK
+   * @returns any Created
+   * @throws ApiError
+   */
+  public static transcribeUsingPost(
+      id: number,
+  ): CancelablePromise<BaseResponse_string_ | any> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/core/audio/start/transcribe/{id}',
+      path: {
+        'id': id,
+      },
+      errors: {
+        401: `Unauthorized`,
+        403: `Forbidden`,
+        404: `Not Found`,
+      },
+    });
+  }
 }

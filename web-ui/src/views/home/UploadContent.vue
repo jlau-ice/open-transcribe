@@ -14,9 +14,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AudioUpload from '@/views/home/AudioUpload.vue'
+import {AudioFileControllerService} from "@/api";
 // import { FileItem } from '@arco-design/web-vue'
 import Transcription from "@/views/home/Transcription.vue";
 import {AudioFileVO} from "@/api";
+import {Message} from "@arco-design/web-vue";
 const emit = defineEmits(['upload-success','star-transcription'])
 const currentAudio = ref<AudioFileVO>(null)
 const uploadSuccess = (fileItem: AudioFileVO) => {
@@ -27,8 +29,12 @@ const setCurrentAudio = (data: AudioFileVO) => {
   currentAudio.value = data
 }
 
-const starTranscription = (data: AudioFileVO) => {
+const starTranscription = async (data: AudioFileVO) => {
   // 开始转录任务
+  const res = await AudioFileControllerService.transcribeUsingPost(data.id)
+  if (res.code === 200) {
+    Message.success('开始转录任务')
+  }
   // emit('star-transcription', data)
   console.log(data);
 }
