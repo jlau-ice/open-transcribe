@@ -259,7 +259,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(id != null, "id", id);
         queryWrapper.eq(StringUtils.isNotBlank(unionId), "union_d", unionId);
-        queryWrapper.eq(StringUtils.isNotBlank(mpOpenId), "mpOpen_id", mpOpenId);
+        queryWrapper.eq(StringUtils.isNotBlank(mpOpenId), "mp_open_id", mpOpenId);
         queryWrapper.eq(StringUtils.isNotBlank(userRole), "user_role", userRole);
         queryWrapper.like(StringUtils.isNotBlank(userProfile), "user_profile", userProfile);
         queryWrapper.like(StringUtils.isNotBlank(userName), "user_name", userName);
