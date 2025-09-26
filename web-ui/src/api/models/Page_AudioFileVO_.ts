@@ -1,9 +1,8 @@
 /* generated using openapi-typescript-codegen -- do not edit */
 /* istanbul ignore file */
 /* tslint:disable */
-/* eslint-disable */
-import type { AudioFileVO } from './AudioFileVO';
-import type { OrderItem } from './OrderItem';
+import type { AudioFileVO } from '@/api';
+import type { OrderItem } from '@/api';
 export type Page_AudioFileVO_ = {
     countId?: string;
     current?: number;
