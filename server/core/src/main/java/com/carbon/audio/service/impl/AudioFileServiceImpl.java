@@ -10,6 +10,7 @@ import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
 import com.carbon.common.ErrorCode;
+import com.carbon.common.UserContext;
 import com.carbon.constant.CommonConstant;
 import com.carbon.exception.ThrowUtils;
 import com.carbon.model.dto.minio.MinioInfo;
@@ -82,6 +83,13 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
 
     @Override
     public Page<AudioFileVO> listAudioFileByPage(AudioFileQueryRequest request) {
+        User user = UserContext.get();
+        if (user == null) {
+            return null;
+        }
+        request.setSortField("create_time");
+        request.setSortOrder(CommonConstant.SORT_ORDER_DESC);
+        request.setUserId(user.getId());
         Page<AudioFile> page = new Page<>(request.getCurrent(), request.getPageSize());
         Page<AudioFile> res = this.page(page, getQueryWrapper(request));
         //return AudioFileVO.objToVo(res);
@@ -95,8 +103,13 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
 
     @Override
     public List<AudioFileVO> listAudioFile(AudioFileQueryRequest request) {
+        User user = UserContext.get();
+        if (user == null) {
+            return null;
+        }
         request.setSortField("create_time");
         request.setSortOrder(CommonConstant.SORT_ORDER_DESC);
+        request.setUserId(user.getId());
         QueryWrapper<AudioFile> queryWrapper = this.getQueryWrapper(request);
         return this.list(queryWrapper).stream().map(AudioFileVO::objToVo).toList();
     }
