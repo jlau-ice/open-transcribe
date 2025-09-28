@@ -50,7 +50,7 @@ public class AudioFileVO implements Serializable {
     /**
      * 文件状态（0 - 待处理、1 - 处理中、2 - 处理成功、3 - 处理失败）
      */
-    private Long status;
+    private Integer status;
 
     /**
      * 是否删除

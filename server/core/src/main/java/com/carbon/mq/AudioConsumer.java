@@ -41,11 +41,9 @@ public class AudioConsumer implements RocketMQListener<String> {
             boolean save = transcribeResultService.save(transcribeResult);
             if (save) {
                 log.info("保存音频转录结果成功：{}", transcribeResult);
-                // 再次更新状态
-                // 更新状态
                 LambdaUpdateWrapper<AudioFile> updateWrapper = new LambdaUpdateWrapper<>();
                 updateWrapper.eq(AudioFile::getId, transcribeMessage.getAudioId())
-                        .set(AudioFile::getStatus, 1);
+                        .set(AudioFile::getStatus, transcribeResult.getStatus().equals("success") ? 2 : 3);
                 audioFileService.update(null, updateWrapper);
             }
         } catch (Exception e) {

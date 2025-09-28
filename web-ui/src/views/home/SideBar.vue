@@ -23,8 +23,13 @@
           >
             <img src="@/assets/file/voice.svg" alt="voice" />
             <div class="flex flex-col">
-              <span class="text-[#404040] leading-5 text-[13px] w-[180px] block truncate">{{ item?.fileName }}</span>
-              <span class="text-[#8c8c8c] leading-5 text-[12px]">{{ hoursAgo(item?.createTime) }}</span>
+              <span class="text-[#404040] leading-5 text-[13px] w-[120px] block truncate">{{ item?.fileName }}</span>
+              <div>
+                <span class="text-[#8c8c8c] leading-5 text-[12px]">{{ hoursAgo(item?.createTime) }}</span>
+                <a-tag :color="statusColorMap[item?.status]" size="small" class="ml-2">
+                  {{ statusMap[item?.status] || '未知状态' }}
+                </a-tag>
+              </div>
             </div>
             <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 transition-opacity duration-200 hover:text-[#f53f3f]" :class="{ 'opacity-100': item.hover, 'opacity-0': !item.hover }" @click.stop="deleteAudio(item)">
               <icon-delete />
@@ -48,6 +53,21 @@ const currentAudio = ref<AudioFileVO>({})
 onMounted(() => {
   getAudioList()
 })
+
+const statusMap = {
+  0: '待处理',
+  1: '处理中',
+  2: '已完成',
+  3: '处理失败',
+}
+
+const statusColorMap = {
+  0: 'gray',
+  1: 'blue',
+  2: 'green',
+  3: 'red',
+}
+
 const emit = defineEmits(['select-audio'])
 const handelClick = (item: AudioFileVO) => {
   currentAudio.value = item
