@@ -38,12 +38,10 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps({
-  file: {
-    type: Object,
-    default: () => {},
-  },
-})
+import { AudioFileVO } from '@/api'
+const props = defineProps<{
+  file?: AudioFileVO
+}>()
 const emit = defineEmits(['transcription'])
 const startTranscription = () => {
   emit('transcription', props.file)
