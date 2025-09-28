@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package mq;
+
+// 这里加上 go_package
+option go_package = "rocketmq-gateway/proto;proto";
+
+service RocketMQGateway {
+  rpc SendMessage (SendRequest) returns (SendResponse);
+  rpc Subscribe(SubscribeRequest) returns (stream MessageResponse);
+}
+
+message SendRequest {
+  string topic = 1;
+  string body = 2;
+}
+
+message SendResponse {
+  string result = 1;
+}
+
+message SubscribeRequest {
+  string topic = 1;
+  string clientId = 2;
+}
+
+message MessageResponse {
+  string topic = 1;
+  string body = 2;
+  string msgId = 3;
+}
