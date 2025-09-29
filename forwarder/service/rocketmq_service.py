@@ -4,7 +4,7 @@ from rocketmq.client import PushConsumer , Producer, Message
 import json
 from datetime import datetime
 import logging
-from service.asr_services import synthesize
+from service.whisperx_services import synthesize
 from utils.thread_pool import get_executor
 # 初始化日志
 logging.basicConfig(level=logging.INFO)
@@ -64,7 +64,7 @@ class RocketMQService:
             start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             # 调用ASR服务处理音频
             logger.info(f"开始处理语音转写,当前时间：{start_time}")
-            result_text = synthesize(audio_url=audio_url)
+            result_text = synthesize(audio_url=audio_url,message_data=message_data)
 
             # 处理结果
             logger.info(f"ASR处理结果: {result_text}")

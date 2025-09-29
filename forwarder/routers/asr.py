@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from service.asr_services import synthesize
+from service.whisperx_services import synthesize
 
 router = APIRouter(prefix="/asr", tags=["ASR"])
 

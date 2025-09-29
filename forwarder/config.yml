@@ -19,4 +19,14 @@ minio:
   secure: false  # 是否使用HTTPS
 # Whisper模型配置
 whisper:
-  model_type: "large-v3-turbo"  # 可选: tiny, base, small, medium, large-v1,large-v2,large-v3,large,large-v3-turbo,turbo
+  model_type: "large-v2"  # 可选: tiny, base, small, medium, large-v1,large-v2,large-v3,large,large-v3-turbo,turbo
+  device: "cuda"  # 可选: cpu, cuda
+  batch_size: 16  # 批处理大小
+  compute_type: "float16"  # 可选: float16, int8_float16, int8
+  download_root: "/data2/hf_cache/whisper"  # whisper模型下载路径，废弃
+# 说话人分离配置
+diarization:
+  use_diarization: true  # 是否启用说话人分离
+  model: "pyannote/speaker-diarization-3.1"  # 说话人分离模型
+  hf_token: "xxxxxxxx"  # Hugging Face访问令牌
+  download_root: "/data2/hf_cache/pyannote"  # pyannote模型下载路径，废弃

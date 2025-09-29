@@ -1,4 +1,7 @@
 # service/asr_services.py
+ """
+ Speech transcription in this document is performed using Whisper.
+  """
 import yaml
 import tempfile
 import os
