@@ -18,9 +18,10 @@
         <span>开始转录</span>
       </button>
     </div>
-    <div class="h-1 w-full bg-[#eaebec]" />
+    <!-- <div class="h-1 w-full bg-[#eaebec]" /> -->
     <div class="flex items-center justify-between border-b border-l border-r border-[#bdbdbd] border-dashed rounded-b-[20px] px-5 py-2 bg-[#fafafa]">
-      <div class="text-[12px]">
+      <audio-player src="http://192.168.172.214:9998/asr/audio/48_asr_20250928102712.wav" />
+      <!-- <div class="text-[12px]">
         <span class="text-[#262626]">00:00</span>
         <span class="text-[#8c8c8c]">/00:09</span>
       </div>
@@ -32,13 +33,14 @@
       <div class="flex items-center gap-6">
         <div class="cursor-pointer text-[12px]">1.0X</div>
         <span class="cursor-pointer"><img src="@/assets/file/down.svg" alt="down" /></span>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { AudioFileVO } from '@/api'
+import AudioPlayer from '@/components/AudioPlayer/index.vue'
 const props = defineProps<{
   file?: AudioFileVO
 }>()
