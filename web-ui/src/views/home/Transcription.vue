@@ -20,7 +20,7 @@
     </div>
     <!-- <div class="h-1 w-full bg-[#eaebec]" /> -->
     <div class="flex items-center justify-between border-b border-l border-r border-[#bdbdbd] border-dashed rounded-b-[20px] px-5 py-2 bg-[#fafafa]">
-      <audio-player src="http://192.168.172.214:9998/asr/audio/48_asr_20250928102712.wav" />
+      <audio-player :src="minioUrl + props.file?.filePath" />
       <!-- <div class="text-[12px]">
         <span class="text-[#262626]">00:00</span>
         <span class="text-[#8c8c8c]">/00:09</span>
@@ -44,6 +44,7 @@ import AudioPlayer from '@/components/AudioPlayer/index.vue'
 const props = defineProps<{
   file?: AudioFileVO
 }>()
+const minioUrl = window._properties.minioUrl
 const emit = defineEmits(['transcription'])
 const startTranscription = () => {
   emit('transcription', props.file)

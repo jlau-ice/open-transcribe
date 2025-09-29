@@ -2,7 +2,7 @@
   <div class="w-full flex flex-col justify-center items-center">
     <input type="range" min="0" :style="progressStyle" :max="duration" step="0.01" v-model="currentTime" @input="onSeek" class="process" />
     <div class="flex items-center justify-between w-full mt-2">
-      <audio ref="audio" :src="src"></audio>
+      <audio ref="audio" :src="props.src"></audio>
       <div class="text-[12px]">
         <span class="text-[#262626]">{{ formatTime(currentTime) }}</span>
         <span class="text-[#8c8c8c]">/{{ formatTime(duration) }}</span>
@@ -24,7 +24,7 @@
 import play from '@/assets/file/play.svg'
 import stop from '@/assets/file/stop.svg'
 
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const props = defineProps({
   src: { type: String, required: true },

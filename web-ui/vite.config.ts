@@ -9,6 +9,7 @@ export default defineConfig({
     port: 8888,
     proxy: {
       '/api': 'http://192.168.172.94:8101',
+      '/asr': 'http://192.168.172.214:9998',
     },
   },
   resolve: {
