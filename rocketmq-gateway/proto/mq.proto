@@ -8,6 +8,7 @@ option go_package = "rocketmq-gateway/proto;proto";
 service RocketMQGateway {
   rpc SendMessage (SendRequest) returns (SendResponse);
   rpc Subscribe(SubscribeRequest) returns (stream MessageResponse);
+  rpc HealthCheck (HealthCheckRequest) returns (HealthCheckResponse);
 }
 
 message SendRequest {
@@ -28,4 +29,19 @@ message MessageResponse {
   string topic = 1;
   string body = 2;
   string msgId = 3;
+}
+
+message HealthCheckRequest {
+  string service = 1;
+}
+
+message HealthCheckResponse {
+  enum ServingStatus {
+    UNKNOWN = 0;
+    SERVING = 1;
+    NOT_SERVING = 2;
+    SERVICE_UNKNOWN = 3;
+  }
+  ServingStatus status = 1;
+  string message = 2;
 }

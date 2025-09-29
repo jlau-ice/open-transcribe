@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 const (
 	RocketMQGateway_SendMessage_FullMethodName = "/mq.RocketMQGateway/SendMessage"
 	RocketMQGateway_Subscribe_FullMethodName   = "/mq.RocketMQGateway/Subscribe"
+	RocketMQGateway_HealthCheck_FullMethodName = "/mq.RocketMQGateway/HealthCheck"
 )
 
 // RocketMQGatewayClient is the client API for RocketMQGateway service.
@@ -29,6 +30,7 @@ const (
 type RocketMQGatewayClient interface {
 	SendMessage(ctx context.Context, in *SendRequest, opts ...grpc.CallOption) (*SendResponse, error)
 	Subscribe(ctx context.Context, in *SubscribeRequest, opts ...grpc.CallOption) (grpc.ServerStreamingClient[MessageResponse], error)
+	HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error)
 }
 
 type rocketMQGatewayClient struct {
@@ -68,12 +70,23 @@ func (c *rocketMQGatewayClient) Subscribe(ctx context.Context, in *SubscribeRequ
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type RocketMQGateway_SubscribeClient = grpc.ServerStreamingClient[MessageResponse]
 
+func (c *rocketMQGatewayClient) HealthCheck(ctx context.Context, in *HealthCheckRequest, opts ...grpc.CallOption) (*HealthCheckResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(HealthCheckResponse)
+	err := c.cc.Invoke(ctx, RocketMQGateway_HealthCheck_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RocketMQGatewayServer is the server API for RocketMQGateway service.
 // All implementations must embed UnimplementedRocketMQGatewayServer
 // for forward compatibility.
 type RocketMQGatewayServer interface {
 	SendMessage(context.Context, *SendRequest) (*SendResponse, error)
 	Subscribe(*SubscribeRequest, grpc.ServerStreamingServer[MessageResponse]) error
+	HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error)
 	mustEmbedUnimplementedRocketMQGatewayServer()
 }
 
@@ -89,6 +102,9 @@ func (UnimplementedRocketMQGatewayServer) SendMessage(context.Context, *SendRequ
 }
 func (UnimplementedRocketMQGatewayServer) Subscribe(*SubscribeRequest, grpc.ServerStreamingServer[MessageResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method Subscribe not implemented")
+}
+func (UnimplementedRocketMQGatewayServer) HealthCheck(context.Context, *HealthCheckRequest) (*HealthCheckResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method HealthCheck not implemented")
 }
 func (UnimplementedRocketMQGatewayServer) mustEmbedUnimplementedRocketMQGatewayServer() {}
 func (UnimplementedRocketMQGatewayServer) testEmbeddedByValue()                         {}
@@ -140,6 +156,24 @@ func _RocketMQGateway_Subscribe_Handler(srv interface{}, stream grpc.ServerStrea
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type RocketMQGateway_SubscribeServer = grpc.ServerStreamingServer[MessageResponse]
 
+func _RocketMQGateway_HealthCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RocketMQGatewayServer).HealthCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RocketMQGateway_HealthCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RocketMQGatewayServer).HealthCheck(ctx, req.(*HealthCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RocketMQGateway_ServiceDesc is the grpc.ServiceDesc for RocketMQGateway service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -150,6 +184,10 @@ var RocketMQGateway_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SendMessage",
 			Handler:    _RocketMQGateway_SendMessage_Handler,
+		},
+		{
+			MethodName: "HealthCheck",
+			Handler:    _RocketMQGateway_HealthCheck_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -2,6 +2,8 @@ package mq
 
 import (
 	"context"
+	"fmt"
+	"log"
 	"sync"
 
 	"github.com/apache/rocketmq-client-go/v2"
@@ -20,9 +22,20 @@ type Subscriber interface {
 type Broker struct {
 	nameServer string
 	producer   rocketmq.Producer
-	consumers  map[string]rocketmq.PushConsumer // keyed by topic group? we keep simple
+	consumers  map[string]rocketmq.PushConsumer // keyed by topic:group
 	subsMu     sync.RWMutex
 	subs       map[string]map[string]Subscriber // topic -> clientId -> Subscriber
+	mu         sync.RWMutex // 保护 consumers map
+	stats      *Stats       // 统计信息
+}
+
+// Stats 统计信息
+type Stats struct {
+	MessagesSent     int64
+	MessagesReceived int64
+	SubscribersCount int64
+	ErrorsCount      int64
+	mu               sync.RWMutex
 }
 
 func NewBroker(nameServer string) *Broker {
@@ -30,38 +43,65 @@ func NewBroker(nameServer string) *Broker {
 		nameServer: nameServer,
 		consumers:  make(map[string]rocketmq.PushConsumer),
 		subs:       make(map[string]map[string]Subscriber),
+		stats:      &Stats{},
 	}
 }
 
 // InitProducer 启动 producer
 func (b *Broker) InitProducer() error {
+	log.Printf("🔧 Initializing producer with name server: %s", b.nameServer)
+	
 	p, err := rocketmq.NewProducer(
 		producer.WithNameServer([]string{b.nameServer}),
 		producer.WithRetry(2),
+		producer.WithQueueSelector(producer.NewManualQueueSelector()),
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create producer: %w", err)
 	}
+	
 	if err := p.Start(); err != nil {
-		return err
+		return fmt.Errorf("failed to start producer: %w", err)
 	}
+	
 	b.producer = p
+	log.Println("✅ Producer initialized successfully")
 	return nil
 }
 
 func (b *Broker) ShutdownProducer() {
 	if b.producer != nil {
-		_ = b.producer.Shutdown()
+		log.Println("🔄 Shutting down producer...")
+		if err := b.producer.Shutdown(); err != nil {
+			log.Printf("❌ Error shutting down producer: %v", err)
+		} else {
+			log.Println("✅ Producer shut down successfully")
+		}
 	}
 }
 
 // Send 同步发送
 func (b *Broker) Send(topic, body string) (string, error) {
+	if b.producer == nil {
+		b.stats.mu.Lock()
+		b.stats.ErrorsCount++
+		b.stats.mu.Unlock()
+		return "", fmt.Errorf("producer not initialized")
+	}
+	
 	msg := primitive.NewMessage(topic, []byte(body))
 	res, err := b.producer.SendSync(context.Background(), msg)
 	if err != nil {
-		return "", err
+		b.stats.mu.Lock()
+		b.stats.ErrorsCount++
+		b.stats.mu.Unlock()
+		return "", fmt.Errorf("failed to send message: %w", err)
 	}
+	
+	b.stats.mu.Lock()
+	b.stats.MessagesSent++
+	b.stats.mu.Unlock()
+	
 	return res.String(), nil
 }
 
@@ -73,6 +113,10 @@ func (b *Broker) SubscribeRegister(topic, clientId string, sub Subscriber) {
 		b.subs[topic] = make(map[string]Subscriber)
 	}
 	b.subs[topic][clientId] = sub
+	
+	b.stats.mu.Lock()
+	b.stats.SubscribersCount++
+	b.stats.mu.Unlock()
 }
 
 // Unregister 取消订阅
@@ -83,6 +127,10 @@ func (b *Broker) Unregister(topic, clientId string) {
 		if s, ok2 := m[clientId]; ok2 {
 			s.Close()
 			delete(m, clientId)
+			
+			b.stats.mu.Lock()
+			b.stats.SubscribersCount--
+			b.stats.mu.Unlock()
 		}
 		if len(m) == 0 {
 			delete(b.subs, topic)
@@ -93,30 +141,52 @@ func (b *Broker) Unregister(topic, clientId string) {
 // StartConsumerForTopic：若尚未为 topic 启动 consumer，则启动并订阅，消费到的消息会分发到注册的 subscribers
 func (b *Broker) StartConsumerForTopic(group, topic string) error {
 	key := topic + ":" + group
-	// 简化，不做重复启动校验；实际可用 map+锁管理
+	
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	
+	// 检查是否已经存在该 consumer
+	if _, exists := b.consumers[key]; exists {
+		log.Printf("🔄 Consumer for topic %s and group %s already exists", topic, group)
+		return nil
+	}
+	
+	log.Printf("🔧 Starting consumer for topic: %s, group: %s", topic, group)
+	
 	c, err := rocketmq.NewPushConsumer(
 		consumer.WithGroupName(group),
 		consumer.WithNameServer([]string{b.nameServer}),
+		consumer.WithConsumeFromWhere(consumer.ConsumeFromLastOffset),
+		consumer.WithConsumerModel(consumer.Clustering),
 	)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create consumer: %w", err)
 	}
 
 	err = c.Subscribe(topic, consumer.MessageSelector{}, func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for _, msg := range msgs {
 			body := string(msg.Body)
 			msgId := msg.MsgId
+			log.Printf("📥 Received message from RocketMQ - Topic: %s, MsgId: %s", topic, msgId)
+			
+			b.stats.mu.Lock()
+			b.stats.MessagesReceived++
+			b.stats.mu.Unlock()
+			
 			b.broadcast(topic, body, msgId)
 		}
 		return consumer.ConsumeSuccess, nil
 	})
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to subscribe to topic %s: %w", topic, err)
 	}
+	
 	if err := c.Start(); err != nil {
-		return err
+		return fmt.Errorf("failed to start consumer: %w", err)
 	}
+	
 	b.consumers[key] = c
+	log.Printf("✅ Consumer started successfully for topic: %s, group: %s", topic, group)
 	return nil
 }
 
@@ -132,7 +202,41 @@ func (b *Broker) broadcast(topic, body, msgId string) {
 
 // ShutdownAll 关闭全部 consumer
 func (b *Broker) ShutdownAll() {
-	for _, c := range b.consumers {
-		_ = c.Shutdown()
+	b.mu.Lock()
+	defer b.mu.Unlock()
+	
+	log.Printf("🔄 Shutting down %d consumers...", len(b.consumers))
+	
+	for key, c := range b.consumers {
+		log.Printf("🔄 Shutting down consumer: %s", key)
+		if err := c.Shutdown(); err != nil {
+			log.Printf("❌ Error shutting down consumer %s: %v", key, err)
+		} else {
+			log.Printf("✅ Consumer %s shut down successfully", key)
+		}
 	}
+	
+	log.Println("✅ All consumers shut down")
+}
+
+// GetStats 获取统计信息
+func (b *Broker) GetStats() Stats {
+	b.stats.mu.RLock()
+	defer b.stats.mu.RUnlock()
+	return Stats{
+		MessagesSent:     b.stats.MessagesSent,
+		MessagesReceived: b.stats.MessagesReceived,
+		SubscribersCount: b.stats.SubscribersCount,
+		ErrorsCount:      b.stats.ErrorsCount,
+	}
+}
+
+// ResetStats 重置统计信息
+func (b *Broker) ResetStats() {
+	b.stats.mu.Lock()
+	defer b.stats.mu.Unlock()
+	b.stats.MessagesSent = 0
+	b.stats.MessagesReceived = 0
+	b.stats.SubscribersCount = 0
+	b.stats.ErrorsCount = 0
 }
