@@ -124,6 +124,7 @@ const deleteAudio = async (item: AudioFileVO) => {
 
 defineExpose({
   getAudioList,
+  handelClick
 })
 </script>
 

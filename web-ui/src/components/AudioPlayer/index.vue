@@ -37,11 +37,13 @@ const duration = ref(0)
 const speeds = [0.5, 1, 1.5, 2]
 const speed = ref(speeds[0])
 let speedIndex = 1
+const emit = defineEmits(['getAudioDuration'])
 
 onMounted(() => {
   const el = audio.value
   el.addEventListener('loadedmetadata', () => {
     duration.value = el.duration
+    emit('getAudioDuration', el.duration)
   })
   el.addEventListener('timeupdate', () => {
     currentTime.value = el.currentTime

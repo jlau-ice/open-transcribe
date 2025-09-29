@@ -25,9 +25,9 @@ import { AudioFileVO } from '@/api'
 import { Message } from '@arco-design/web-vue'
 const emit = defineEmits(['upload-success', 'star-transcription'])
 const currentAudio = ref<AudioFileVO>(null)
-const uploadSuccess = (fileItem: AudioFileVO) => {
-  currentAudio.value = fileItem
-  emit('upload-success')
+const uploadSuccess = (file: AudioFileVO) => {
+  currentAudio.value = file
+  emit('upload-success', file)
 }
 const setCurrentAudio = (data: AudioFileVO) => {
   currentAudio.value = data

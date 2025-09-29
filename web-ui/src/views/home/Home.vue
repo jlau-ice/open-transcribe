@@ -12,8 +12,9 @@ import UploadContent from './UploadContent.vue'
 import { AudioFileVO } from '@/api'
 const sideBarRef = ref(null)
 const uploadContentRef = ref(null)
-const uploadSuccess = () => {
+const uploadSuccess = (file: AudioFileVO) => {
   sideBarRef.value.getAudioList()
+  sideBarRef.value.handelClick(file)
 }
 const handelSelectAudio = (item: AudioFileVO) => {
   uploadContentRef.value.setCurrentAudio(item)

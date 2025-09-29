@@ -6,7 +6,7 @@
       </div>
       <div class="mt-3">
         <span class="text-[#8C8C8C] text-[16px]">音频时长：</span>
-        <span class="text-[#262626] text-[18px] font-bold">NN:NN</span>
+        <span class="text-[#262626] text-[18px] font-bold">{{ formatTime(audioDuration) }}</span>
       </div>
       <span class="pt-3 pb-5 text-[13px] text-[#8C8C8C]">开始转录后，转录过程无法取消。请确保需要转录的内容后再开始操作。</span>
       <button
@@ -20,7 +20,7 @@
     </div>
     <!-- <div class="h-1 w-full bg-[#eaebec]" /> -->
     <div class="flex items-center justify-between border-b border-l border-r border-[#bdbdbd] border-dashed rounded-b-[20px] px-5 py-2 bg-[#fafafa]">
-      <audio-player :src="minioUrl + props.file?.filePath" />
+      <audio-player :src="minioUrl + props.file?.filePath" @get-audio-duration="getAudioDuration" />
       <!-- <div class="text-[12px]">
         <span class="text-[#262626]">00:00</span>
         <span class="text-[#8c8c8c]">/00:09</span>
@@ -39,6 +39,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { AudioFileVO } from '@/api'
 import AudioPlayer from '@/components/AudioPlayer/index.vue'
 const props = defineProps<{
@@ -48,6 +49,16 @@ const minioUrl = window._properties.minioUrl
 const emit = defineEmits(['transcription'])
 const startTranscription = () => {
   emit('transcription', props.file)
+}
+const audioDuration = ref(0)
+const getAudioDuration = (duration: number) => {
+  audioDuration.value = duration
+}
+
+const formatTime = (duration: number) => {
+  const m = Math.floor(duration / 60)
+  const s = Math.floor(duration % 60)
+  return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
 }
 </script>
 
