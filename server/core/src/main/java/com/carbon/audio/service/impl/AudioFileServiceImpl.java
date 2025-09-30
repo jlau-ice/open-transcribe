@@ -49,7 +49,6 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
     public static final String FILE_PATH = "audio";
 
 
-    @Autowired
     public AudioFileServiceImpl(AudioFileMapper audioFileMapper,
                                 UserService userService,
                                 MinioUtil minioUtil,
@@ -77,6 +76,7 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
         audioFile.setFileSize(file.getSize());
         audioFile.setFileType(file.getContentType());
         audioFile.setFilePath(upload.getFileName());
+        audioFile.setStatus(0);
         this.save(audioFile);
         return AudioFileVO.objToVo(audioFile);
     }
