@@ -8,8 +8,8 @@ export default defineConfig({
     host: true,
     port: 8888,
     proxy: {
-      '/api': 'http://192.168.172.94:8101',
-      '/asr': 'http://192.168.172.214:9998',
+      '/api': 'http://127.0.0.1:8101',
+      '/asr': 'http://127.0.0.1:9000',
     },
   },
   resolve: {
