@@ -38,6 +38,8 @@ const starTranscription = async (data: AudioFileVO) => {
   const res = await AudioFileControllerService.transcribeUsingPost(data.id)
   if (res.code === 200) {
     Message.success('开始转录任务')
+    // 刷新列表
+    currentAudio.value.status = 1
   }
   // emit('star-transcription', data)
   console.log(data)

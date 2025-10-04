@@ -185,6 +185,7 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                    <mainClass>com.carbon.Application</mainClass>
                 </configuration>
             </plugin>
         </plugins>
