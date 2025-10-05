@@ -1,13 +1,19 @@
 package com.carbon.result.model.vo;
 
 
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.TypeReference;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.carbon.result.model.dto.TranscriptSegment;
 import com.carbon.result.model.entity.TranscribeResult;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class TranscribeResultVO {
@@ -26,7 +32,7 @@ public class TranscribeResultVO {
     /**
      * 转录结果
      */
-    private String resultText;
+    private List<TranscriptSegment> resultSegments;
 
     /**
      * 状态
@@ -61,6 +67,10 @@ public class TranscribeResultVO {
     public static TranscribeResultVO objToVo(TranscribeResult transcribeResult) {
         TranscribeResultVO transcribeResultVO = new TranscribeResultVO();
         BeanUtils.copyProperties(transcribeResult, transcribeResultVO);
+        String resultText = transcribeResult.getResultText();
+        List<TranscriptSegment> segments;
+        segments = JSONUtil.toList(resultText, TranscriptSegment.class);
+        transcribeResultVO.setResultSegments(segments);
         return transcribeResultVO;
     }
 

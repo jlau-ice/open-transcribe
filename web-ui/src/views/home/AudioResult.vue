@@ -1,7 +1,22 @@
 <template>
-  <div class="overflow-y-auto h-[calc(100vh-100px)]">
+  <div class="overflow-y-auto h-[calc(100vh-100px)] ">
+    <div class="flex items-center justify-center gap-6">
+      <audio-player class="p-2 px-5" :src="minioUrl + props.file?.filePath"/>
+    </div>
     <template v-for="item in resultList" :key="item?.id">
-      <div class="text-[#262626]">{{ item?.resultText }}</div>
+      <template v-for="(sig, index) in item.resultSegments" :key="index">
+        <div class="flex flex-col text-[#262626] mt-[10px]">
+          <div class="flex flex-col gap-[10px] p-[10px] cursor-pointer bg-[#FFF] rounded-[6px] shadow hover:bg-[#f8f8f9]">
+            <div class="flex gap-[10px]">
+              <icon-user />
+              <span>{{ sig?.speaker }}</span> <span>{{ formatTime(sig?.end - sig?.start) }}</span>
+            </div>
+            <span class="text-[#333333]">
+              {{ sig?.text }}
+            </span>
+          </div>
+        </div>
+      </template>
     </template>
   </div>
 </template>
@@ -10,6 +25,8 @@ import { AudioFileVO } from '@/api'
 import { onMounted, ref, watch } from 'vue'
 import { TranscribeResultControllerService } from '@/api'
 import { type TranscribeResultVO } from '@/api'
+import AudioPlayer from '@/components/AudioPlayer/index.vue'
+const minioUrl = window._properties.minioUrl
 const props = defineProps<{
   file?: AudioFileVO
 }>()
@@ -26,10 +43,15 @@ watch(
     }
   },
 )
-
+const formatTime = (sec: number) => {
+  const m = Math.floor(sec / 60)
+  const s = Math.floor(sec % 60)
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+}
 const getResult = async (id: number) => {
   const res = await TranscribeResultControllerService.listUsingGet(id)
   resultList.value = res.data
+  console.log(resultList.value)
 }
 </script>
 

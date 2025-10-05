@@ -27,6 +27,7 @@ export type { Page_AudioFileVO_ } from './models/Page_AudioFileVO_';
 export type { Page_User_ } from './models/Page_User_';
 export type { Page_UserVO_ } from './models/Page_UserVO_';
 export type { TranscribeResultVO } from './models/TranscribeResultVO';
+export type { TranscriptSegment } from './models/TranscriptSegment';
 export type { User } from './models/User';
 export type { UserAddRequest } from './models/UserAddRequest';
 export type { UserLoginRequest } from './models/UserLoginRequest';
