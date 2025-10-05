@@ -1,0 +1,20 @@
+# 应用程序监听配置
+server:
+  # gRPC 服务监听端口
+  listen_port: 50051
+
+# RocketMQ 连接配置
+rocketmq:
+  # NameServer 地址列表，例如：
+  nameservers:
+    - "127.0.0.1:9876"
+    # - "192.168.1.10:9876"
+  # 推荐使用5.x gRPC 客户端时，如果使用 Proxy，这里应配置 Proxy 地址
+  # proxy_address: "127.0.0.1:8081"
+
+  # 发送者（Producer）配置
+  producer:
+    # 用于发送者的组名 (可选，但在某些场景下推荐设置)
+    group_name: "GO_GATEWAY_PRODUCER_GROUP"
+    # 重试次数
+    send_retry_times: 3

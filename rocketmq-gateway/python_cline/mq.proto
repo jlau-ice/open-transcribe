@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package mq;
+
+// 定义 Go 模块的包名和路径，方便 Go 项目引用
+option go_package = "./proto;mqproto";
+
+// ====================================================================
+// 核心服务定义：RocketMQGateway (Simple)
+// ====================================================================
+service RocketMQGateway {
+
+  // 1. 发送消息：同步发送
+  rpc SendMessage (SendRequest) returns (SendResponse);
+
+  // 2. 消费消息：客户端发起订阅，服务端持续推送消息流
+  rpc Subscribe(SubscribeRequest) returns (stream MessageResponse);
+}
+
+// ====================================================================
+// 消息发送 (Producer) 结构
+// ====================================================================
+message SendRequest {
+  string topic = 1;
+  // 消息内容，使用 bytes 类型更通用
+  bytes body = 2;
+  // 可选：消息标签，用于消费者过滤
+  optional string tags = 3;
+}
+
+message SendResponse {
+  // RocketMQ 返回的消息 ID
+  string msgId = 1;
+  // 简单的成功或失败状态
+  bool success = 2;
+  // 如果失败，返回错误信息
+  optional string error = 3;
+}
+
+
+// ====================================================================
+// 消息订阅/消费 (Consumer) 结构
+// ====================================================================
+message SubscribeRequest {
+  string topic = 1;
+  // 对应 RocketMQ 的 Consumer Group Name，这是必须的
+  string consumerGroup = 2;
+  // 新增：用于按标签过滤消息。多个标签可以用双竖线 || 分隔
+  optional string tags = 3;
+}
+
+message MessageResponse {
+  string topic = 1;
+  bytes body = 2;
+  string msgId = 3;
+}
