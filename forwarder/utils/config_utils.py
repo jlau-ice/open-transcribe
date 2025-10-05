@@ -8,9 +8,9 @@ class ConfigManager:
 
     _instance = None
     _config = None
-    _config_path = "config.yaml"
+    _config_path = "config.yml"
 
-    def __new__(cls, config_path: str = "config.yaml"):
+    def __new__(cls, config_path: str = "config.yml"):
         if cls._instance is None:
             cls._instance = super(ConfigManager, cls).__new__(cls)
             cls._config_path = config_path
@@ -67,7 +67,7 @@ class ConfigManager:
 # 全局配置管理器实例
 _config_manager = None
 
-def get_config_manager(config_path: str = "config.yaml") -> ConfigManager:
+def get_config_manager(config_path: str = "config.yml") -> ConfigManager:
     """
     获取全局配置管理器实例
 

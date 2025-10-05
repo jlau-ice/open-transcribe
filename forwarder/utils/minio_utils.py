@@ -16,7 +16,7 @@ class MinIOException(Exception):
         self.error_code = error_code
         super().__init__(self.message)
 
-def download_file_from_minio(audio_url: str, temp_dir: str, config_path="config.yaml") -> str:
+def download_file_from_minio(audio_url: str, temp_dir: str, config_path="config.yml") -> str:
     """
     使用MinIO SDK下载音频文件到临时目录
     

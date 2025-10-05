@@ -1,7 +1,7 @@
 # service/asr_services.py
- """
+"""
  Speech transcription in this document is performed using Whisper.
-  """
+"""
 import yaml
 import tempfile
 import os
@@ -30,7 +30,7 @@ def _get_whisper_model():
         try:
             logger.info("正在加载Whisper模型...")
             # 从配置文件读取模型参数
-            config_path = "config.yaml"
+            config_path = "config.yml"
             with open(config_path, 'r', encoding='utf-8') as f:
                 config = yaml.safe_load(f)
                 model_type = config.get('whisper', {}).get('model_type', 'base')
@@ -59,7 +59,7 @@ def transcribe_audio(file_path: str) -> str:
     except Exception as e:
         raise ASRException(f"语音转写失败: {str(e)}", "TRANSCRIBE_ERROR")
 
-def synthesize(audio_url: str, config_path="config.yaml") -> str:
+def synthesize(audio_url: str, config_path="config.yml") -> str:
     """
     根据传入的音频文件下载地址，下载音频文件到本地临时文件，
     然后调用Whisper模型进行语音转写，返回转写结果。

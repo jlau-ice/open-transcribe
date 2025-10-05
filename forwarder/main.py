@@ -2,8 +2,13 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from routers import asr
+# linux MacOS 上可以正常使用rocketmq sdk  用 rocketmq_service.py
 from service.rocketmq_service import RocketMQService
+# Windows 上 使用
+# from service.rocketmq_gateway import RocketMQService
+from utils.env_util import init_ffmpeg
 from utils.thread_pool import get_thread_pool_manager
+import os
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -20,10 +25,14 @@ async def lifespan(app: FastAPI):
     try:
         # 初始化线程池管理器
         app.state.thread_pool_manager = get_thread_pool_manager()
-        
+        # 以下二选一
+        # linux MacOS 上可以正常使用rocketmq sdk
         # 初始化RocketMQ服务
         app.state.rocketmq_service = RocketMQService.get_rocketmq_service()
         app.state.rocketmq_service.start()
+        # windows 上使用 grpc调用中间服务
+        # config_path = os.path.join(os.path.dirname(__file__), "config.yml")
+        # app.state.rocketmq_service = RocketMQService.get_instance(config_path)
         
         print("应用启动完成")
         yield
@@ -70,4 +79,5 @@ def root():
 import uvicorn
 
 if __name__ == "__main__":
+    # init_ffmpeg()
     uvicorn.run("main:app", host="0.0.0.0", port=8500, reload=True)

@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 
 class ThreadPoolManager:
-    def __init__(self, config_path="config.yaml"):
+    def __init__(self, config_path="config.yml"):
         self.executor = None
         self._load_config(config_path)
         self._create_thread_pool()
@@ -37,14 +37,14 @@ class ThreadPoolManager:
 # 全局线程池管理器实例
 thread_pool_manager = None
 
-def get_thread_pool_manager(config_path="config.yaml"):
+def get_thread_pool_manager(config_path="config.yml"):
     """获取全局线程池管理器实例"""
     global thread_pool_manager
     if thread_pool_manager is None:
         thread_pool_manager = ThreadPoolManager(config_path)
     return thread_pool_manager
 
-def get_executor(config_path="config.yaml"):
+def get_executor(config_path="config.yml"):
     """获取线程池执行器"""
     manager = get_thread_pool_manager(config_path)
     return manager.get_executor()
