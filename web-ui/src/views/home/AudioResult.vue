@@ -1,23 +1,25 @@
 <template>
-  <div class="overflow-y-auto h-[calc(100vh-100px)] ">
-    <div class="flex items-center justify-center gap-6">
-      <audio-player class="p-2 px-5" :src="minioUrl + props.file?.filePath"/>
+  <div class="h-[calc(100vh-100px)]">
+    <div class="flex h-[70px] items-center justify-center gap-6 bg-[#FFF] rounded-lg border border-[#eaebec]">
+      <audio-player-card class="p-2 px-5" :src="minioUrl + props.file?.filePath" />
     </div>
-    <template v-for="item in resultList" :key="item?.id">
-      <template v-for="(sig, index) in item.resultSegments" :key="index">
-        <div class="flex flex-col text-[#262626] mt-[10px]">
-          <div class="flex flex-col gap-[10px] p-[10px] cursor-pointer bg-[#FFF] rounded-[6px] shadow hover:bg-[#f8f8f9]">
-            <div class="flex gap-[10px]">
-              <icon-user />
-              <span>{{ sig?.speaker }}</span> <span>{{ formatTime(sig?.end - sig?.start) }}</span>
+    <div class="h-[calc(100vh-170px)] overflow-y-auto mt-3 flex flex-col gap-[10px]">
+      <template v-for="item in resultList" :key="item?.id">
+        <template v-for="(sig, index) in item.resultSegments" :key="index">
+          <div class="flex flex-col text-[#262626]">
+            <div class="flex flex-col gap-[10px] p-[10px] cursor-pointer bg-[#FFF] rounded-[6px] border border-[#eaebec] hover:bg-[#f8f8f9]">
+              <div class="flex gap-[10px]">
+                <icon-user />
+                <span>{{ sig?.speaker }}</span> <span>{{ formatTime(sig?.end - sig?.start) }}</span>
+              </div>
+              <span class="text-[#333333]">
+                {{ sig?.text }}
+              </span>
             </div>
-            <span class="text-[#333333]">
-              {{ sig?.text }}
-            </span>
           </div>
-        </div>
+        </template>
       </template>
-    </template>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
@@ -25,7 +27,7 @@ import { AudioFileVO } from '@/api'
 import { onMounted, ref, watch } from 'vue'
 import { TranscribeResultControllerService } from '@/api'
 import { type TranscribeResultVO } from '@/api'
-import AudioPlayer from '@/components/AudioPlayer/index.vue'
+import AudioPlayerCard from '@/components/AudioPlayer/AudioPlayerCard.vue'
 const minioUrl = window._properties.minioUrl
 const props = defineProps<{
   file?: AudioFileVO
