@@ -36,7 +36,7 @@ const isPlaying = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
 const speeds = [0.5, 1, 1.5, 2]
-const speed = ref(speeds[0])
+const speed = ref(speeds[1])
 let speedIndex = 1
 const emit = defineEmits(['getAudioDuration'])
 
