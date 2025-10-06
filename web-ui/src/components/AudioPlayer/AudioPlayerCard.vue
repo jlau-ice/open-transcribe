@@ -84,6 +84,16 @@ const progressStyle = computed(() => {
     background: `linear-gradient(to right, #8c8c8c ${percent}%, #eaebec ${percent}%)`,
   }
 })
+
+const setCurrentTime = (time: number) => {
+  audio.value.currentTime = time
+  const el = audio.value
+  el.play()
+}
+
+defineExpose({
+  setCurrentTime,
+})
 </script>
 
 <style scoped>

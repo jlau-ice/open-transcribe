@@ -1,12 +1,12 @@
 <template>
   <div class="h-[calc(100vh-100px)]">
     <div class="flex h-[70px] items-center justify-center gap-6 bg-[#FFF] rounded-lg border border-[#eaebec]">
-      <audio-player-card class="p-2 px-5" :src="minioUrl + props.file?.filePath" />
+      <audio-player-card class="p-2 px-5" :src="minioUrl + props.file?.filePath" ref="audioPlayerCardRef"/>
     </div>
     <div class="h-[calc(100vh-170px)] overflow-y-auto mt-3 flex flex-col gap-[10px]">
       <template v-for="item in resultList" :key="item?.id">
         <template v-for="(sig, index) in item.resultSegments" :key="index">
-          <div class="flex flex-col text-[#262626]">
+          <div class="flex flex-col text-[#262626]" @click="handelClick(sig)">
             <div class="flex flex-col gap-[10px] p-[10px] cursor-pointer bg-[#FFF] rounded-[6px] border border-[#eaebec] hover:bg-[#f8f8f9]">
               <div class="flex gap-[10px]">
                 <icon-user />
@@ -23,11 +23,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import { AudioFileVO } from '@/api'
+import { AudioFileVO, type TranscriptSegment } from '@/api'
 import { onMounted, ref, watch } from 'vue'
 import { TranscribeResultControllerService } from '@/api'
 import { type TranscribeResultVO } from '@/api'
 import AudioPlayerCard from '@/components/AudioPlayer/AudioPlayerCard.vue'
+const audioPlayerCardRef = ref(null)
 const minioUrl = window._properties.minioUrl
 const props = defineProps<{
   file?: AudioFileVO
@@ -54,6 +55,10 @@ const getResult = async (id: number) => {
   const res = await TranscribeResultControllerService.listUsingGet(id)
   resultList.value = res.data
   console.log(resultList.value)
+}
+
+const handelClick = (sig: TranscriptSegment) => {
+  audioPlayerCardRef.value.setCurrentTime(sig.start)
 }
 </script>
 
