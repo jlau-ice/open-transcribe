@@ -1,6 +1,7 @@
 # config.yaml
 #消息队列配置
 rocketmq:
+  grpc_server: "localhost:50051"
   nameserver: "192.168.172.214:9876"  # RocketMQ NameServer地址
   topic: "asr_transfer_topic"            # 订阅的主题
   consumer_group: "asr_consumer_group"  # 消费者组
