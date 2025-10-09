@@ -1,18 +1,20 @@
 <template>
-  <div class="w-[240px] bg-[#f8f8f9] h-[calc(100vh-60px)] p-[10px] border-r-[1px] border-[#eaebec]">
+  <div class="w-[240px] bg-[#f8f8f9] h-[calc(100vh-60px)] p-[10px] border-r-[1px] border-[#eaebec] max-h-[calc(100vh-60px)]">
     <div class="flex flex-col gap-10px">
-      <a-input class="arco-input-wrapper h-[40px] !rounded-[6px] !border-[#eaebec]" placeholder="搜索" size="large" allow-clear>
-        <template #prefix>
-          <icon-search />
-        </template>
-      </a-input>
-      <div class="text-[#8c8c8c] cursor-pointer hover:bg-[#f2f3f5] p-2.5 mt-2 border-solid border-[1px] rounded-[6px] border-[#eaebec]" @click="toUpload">
-        <icon-upload />
-        上传
+      <div class="h-[140px]">
+        <a-input class="arco-input-wrapper h-[40px] !rounded-[6px] !border-[#eaebec]" placeholder="搜索" size="large" allow-clear>
+          <template #prefix>
+            <icon-search />
+          </template>
+        </a-input>
+        <div class="text-[#8c8c8c] cursor-pointer hover:bg-[#f2f3f5] p-2.5 mt-2 border-solid border-[1px] rounded-[6px] border-[#eaebec]" @click="toUpload">
+          <icon-upload />
+          上传
+        </div>
+        <div class="h-[1px] w-full bg-[#eaebec] my-[15px]" />
+        <span class="text-[#8c8c8c]">最近使用</span>
       </div>
-      <div class="h-[1px] w-full bg-[#eaebec] my-[15px]" />
-      <span class="text-[#8c8c8c]">最近使用</span>
-      <div class="mt-[10px] truncate flex flex-col gap-[5px]">
+      <div class="mt-[10px] max-h-[calc(100vh-220px)] !overflow-y-auto scrollbar-hide truncate flex flex-col gap-[5px]">
         <template v-for="(item, index) in audioList" :key="index">
           <div
             class="relative p-[5px] flex items-center gap-[10px] rounded-[6px] cursor-pointer hover:bg-[#f1f1f3]"
@@ -124,7 +126,7 @@ const deleteAudio = async (item: AudioFileVO) => {
 
 defineExpose({
   getAudioList,
-  handelClick
+  handelClick,
 })
 </script>
 
@@ -148,5 +150,8 @@ defineExpose({
 }
 .wrapper:hover.hover-content {
   display: block;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 </style>
