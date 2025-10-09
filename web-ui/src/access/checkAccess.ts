@@ -1,5 +1,5 @@
 import { ACCESS_ENUM, ACCESS_LEVEL_MAP } from './accessEnum'
-import { LoginUserVO } from '@/api'
+import { type LoginUserVO } from '@/api'
 /**
  * 检查用户权限
  * @param loginUser 登录用户对象

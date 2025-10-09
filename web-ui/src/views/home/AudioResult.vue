@@ -10,7 +10,9 @@
             <div class="flex flex-col gap-[10px] p-[10px] cursor-pointer bg-[#FFF] rounded-[6px] border border-[#eaebec] hover:bg-[#f8f8f9]">
               <div class="flex gap-[10px]">
                 <icon-user />
-                <span>{{ sig?.speaker }}</span> <span>{{ formatTime(sig?.end - sig?.start) }}</span>
+                 <span>{{ sig?.speaker }}</span>
+                <span class="text-[#333333]">{{ `${formatTime(sig?.start)} - ${formatTime(sig?.end)}` }}</span>
+                <span class="text-[#8C8C8C]">{{ formatTime(sig?.end - sig?.start) }}</span>
               </div>
               <span class="text-[#333333]">
                 {{ sig?.text }}
