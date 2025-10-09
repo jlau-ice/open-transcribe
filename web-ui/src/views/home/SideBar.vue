@@ -50,7 +50,7 @@ import { type AudioFileVO } from '@/api'
 import { useUserStore } from '@/store/user'
 import { Message, Modal } from '@arco-design/web-vue'
 const userStore = useUserStore()
-const audioList = ref([])
+const audioList = ref<Array<AudioFileVO>>([])
 const currentAudio = ref<AudioFileVO>({})
 onMounted(() => {
   getAudioList()

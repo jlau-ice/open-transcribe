@@ -12,5 +12,6 @@ export type AudioFileVO = {
     status?: number;
     updateTime?: string;
     userId?: number;
+    hover?: boolean;
 };
 
