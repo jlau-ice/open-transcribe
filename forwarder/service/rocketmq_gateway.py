@@ -1,4 +1,6 @@
 # service/rocketmq_gateway.py
+import traceback
+
 import yaml
 import json
 import logging
@@ -71,42 +73,54 @@ class RocketMQService:
     # ---------------- 业务处理 ----------------
     def process_audio(self, audio_url, message_data):
         """处理音频 -> ASR 转写 -> 结果回传"""
+        start_time = self._now()
+        logger.info(f"🎙️ 开始处理语音转写, 时间: {start_time}")
         try:
-            start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            logger.info(f"🎙️ 开始处理语音转写, 时间: {start_time}")
             result_text = synthesize(audio_url=audio_url, message_data=message_data)
-
             logger.info(f"ASR 处理结果: {result_text}")
-            self.send_result(result_text, message_data, start_time)
+            self._send_mq_result(
+                message_data,
+                result_text=result_text,
+                status="success",
+                start_time=start_time
+            )
         except Exception as e:
-            logger.error(f"❌ 处理音频时出错: {e}")
+            logger.exception("❌ 处理音频时出错")
+            self._send_mq_result(
+                message_data,
+                result_text=str(e),
+                status="error",
+                start_time=start_time
+            )
 
-    # ---------------- 生产逻辑 ----------------
-    def send_result(self, result_text, original_message_data, start_time):
-        """把结果发回 MQ"""
+    # ---------------- 内部通用逻辑 ----------------
+    def _send_mq_result(self, original_message_data, result_text, status, start_time):
+        """统一的 MQ 结果发送逻辑"""
+        end_time = self._now()
+        result_data = {
+            "audioId": original_message_data.get("id"),
+            "result_text": result_text,
+            "status": status,
+            "startTime": start_time,
+            "endTime": end_time
+        }
         try:
-            end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-            result_data = {
-                "audioId": original_message_data.get("id"),
-                "result_text": result_text,
-                "status": "success",
-                "startTime": start_time,
-                "endTime": end_time
-            }
-
             result_json = json.dumps(result_data, ensure_ascii=False)
-
+            topic = self.rocketmq_config.get('send_topic', 'asr_result_topic')
             request = mq_pb2.SendRequest(
-                topic=self.rocketmq_config.get('send_topic', 'asr_result_topic'),
+                topic=topic,
                 body=result_json.encode("utf-8"),
                 tags="tag_asr_transfer_result"
             )
-
             response = self.stub.SendMessage(request)
             if response.success:
-                logger.info(f"✅ 结果已发送到 {request.topic}, msgId={response.msgId}")
+                logger.info(f"✅ 结果已发送到 {topic}, msgId={response.msgId}")
             else:
-                logger.error(f"❌ 发送失败: {response.error}")
-        except Exception as e:
-            logger.error(f"❌ 发送结果消息时出错: {e}")
+                logger.error(f"❌ MQ 发送失败: {response.error}")
+        except Exception:
+            logger.error(f"❌ MQ 结果发送异常\n{traceback.format_exc()}")
+
+    @staticmethod
+    def _now():
+        """统一时间格式"""
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")

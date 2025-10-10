@@ -1,4 +1,6 @@
 # service/rocketmq_service.py
+import traceback
+
 import yaml
 from rocketmq.client import PushConsumer , Producer, Message
 import json
@@ -59,60 +61,66 @@ class RocketMQService:
         """
         异步处理音频转换
         """
+        start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # 调用ASR服务处理音频
+        logger.info(f"开始处理语音转写,当前时间：{start_time}")
         try:
-
-            start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            # 调用ASR服务处理音频
-            logger.info(f"开始处理语音转写,当前时间：{start_time}")
             result_text = synthesize(audio_url=audio_url,message_data=message_data)
-
             # 处理结果
             logger.info(f"ASR处理结果: {result_text}")
-
+            self._send_result(
+                result_text=result_text,
+                original_message_data=message_data,
+                status="success",
+                start_time=start_time
+            )
             # 处理结果并发送到结果主题
-            self.send_result(result_text, message_data,start_time)
+            # self.send_result(result_text, message_data,start_time)
             # 这里可以将结果发送到其他主题或者存储到数据库
             # self.send_result(result_text, message_data.get('request_id'))
         except Exception as e:
-            logger.error(f"处理音频时出错: {e}")
+            # 异常 -> 发送错误消息
+            logger.exception("❌ 处理音频时出错")
+            self._send_result(
+                result_text=str(e),
+                original_message_data=message_data,
+                status="error",
+                start_time=start_time
+            )
 
-     # 发送结果到消息队列
-    def send_result(self, result_text, original_message_data, start_time):
+    def _send_result(self, result_text, original_message_data, status, start_time):
         """
-        将处理结果发送到结果回传的消息主题
-
-        Args:
-            result_text (str): ASR处理结果文本
-            original_message_data (dict): 原始消息数据
+        统一的结果回传逻辑 (成功 / 失败)
         """
         try:
-            end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            end_time = self._now()
+            topic = self.rocketmq_config.get('send_topic', 'asr_result_topic')
 
-            # 重新组装结果数据
+            # 组装结果数据
             result_data = {
                 "audioId": original_message_data.get("id"),
                 "result_text": result_text,
-                "status": "success",
-                "startTime":start_time,
-                "endTime":end_time
-
+                "status": status,
+                "startTime": start_time,
+                "endTime": end_time
             }
 
-            # 生成JSON格式的消息体
+            # 转成 JSON
             result_json = json.dumps(result_data, ensure_ascii=False)
-
-            # 创建消息对象
-            msg = Message(self.rocketmq_config.get('send_topic', 'asr_result_topic'))
-            #msg.set_keys(original_message_data.get("id", ""))
+            msg = Message(topic)
             msg.set_tags("tag_asr_transfer_result")
             msg.set_body(result_json)
 
-            # 发送消息
+            # 同步发送
             self.producer.send_sync(msg)
-            logger.info(f"结果已发送到主题 {self.rocketmq_config.get('send_topic', 'asr_result_topic')}: {result_text}")
 
-        except Exception as e:
-            logger.exception(f"发送结果消息时出错: {e}")
+            if status == "success":
+                logger.info(f"✅ 结果已发送到主题 {topic}")
+            else:
+                logger.warning(f"⚠️ 错误结果已发送到主题 {topic}: {result_text}")
+        except Exception:
+            logger.error(f"❌ 发送结果消息时出错:\n{traceback.format_exc()}")
+
     def start(self):
         """
         启动消费者和生产者
@@ -146,3 +154,8 @@ class RocketMQService:
         if cls._rocketmq_service is None:
             cls._rocketmq_service = RocketMQService(config_path)
         return cls._rocketmq_service
+
+    @staticmethod
+    def _now():
+        """统一时间格式"""
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
