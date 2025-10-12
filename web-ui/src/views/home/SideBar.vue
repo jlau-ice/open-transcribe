@@ -89,12 +89,17 @@ function hoursAgo(createdAt: string | number | Date): string {
   const createdTime = new Date(createdAt).getTime()
   const now = Date.now()
   const diffMs = now - createdTime
+  if (isNaN(createdTime)) return '时间不合法'
   if (diffMs < 0) return '时间不合法'
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  if (diffHours === 0) {
+  if (diffHours < 1) {
     return '不到1小时前'
+  } else if (diffHours < 24) {
+    return `${diffHours}小时前`
+  } else {
+    const diffDays = Math.floor(diffHours / 24)
+    return `${diffDays}天前`
   }
-  return `${diffHours}小时前`
 }
 
 const toUpload = () => {
