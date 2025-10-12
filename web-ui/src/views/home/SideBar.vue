@@ -2,7 +2,7 @@
   <div class="w-[240px] bg-[#f8f8f9] h-[calc(100vh-60px)] p-[10px] border-r-[1px] border-[#eaebec] max-h-[calc(100vh-60px)]">
     <div class="flex flex-col gap-10px">
       <div class="h-[140px]">
-        <a-input class="arco-input-wrapper h-[40px] !rounded-[6px] !border-[#eaebec]" placeholder="搜索" size="large" allow-clear>
+        <a-input class="arco-input-wrapper h-[40px] !rounded-[6px] !border-[#eaebec]" v-model="filterContent" placeholder="搜索" size="large" allow-clear>
           <template #prefix>
             <icon-search />
           </template>
@@ -15,7 +15,7 @@
         <span class="text-[#8c8c8c]">最近使用</span>
       </div>
       <div class="mt-[10px] max-h-[calc(100vh-220px)] !overflow-y-auto scrollbar-hide truncate flex flex-col gap-[5px]">
-        <template v-for="(item, index) in audioList" :key="index">
+        <template v-for="(item, index) in filterAudioList" :key="index">
           <div
             class="relative p-[5px] flex items-center gap-[10px] rounded-[6px] cursor-pointer hover:bg-[#f1f1f3]"
             :class="{ 'bg-[#edeaf7]': currentAudio?.id === item.id }"
@@ -44,14 +44,18 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import { AudioFileControllerService } from '@/api'
 import { type AudioFileVO } from '@/api'
 import { useUserStore } from '@/store/user'
 import { Message, Modal } from '@arco-design/web-vue'
 const userStore = useUserStore()
 const audioList = ref<Array<AudioFileVO>>([])
+const filterAudioList = computed(()=> {
+  return audioList.value.filter(item => item.fileName.includes(filterContent.value || ''))
+})
 const currentAudio = ref<AudioFileVO>({})
+const filterContent = ref<string>()
 onMounted(() => {
   getAudioList()
 })
