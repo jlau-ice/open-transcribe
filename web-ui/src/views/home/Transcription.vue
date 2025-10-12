@@ -11,11 +11,12 @@
       <span class="pt-3 pb-5 text-[13px] text-[#8C8C8C]">开始转录后，转录过程无法取消。请确保需要转录的内容后再开始操作。</span>
       <button
         class="flex items-center justify-center h-[48px] w-[328px] rounded-[8px] gap-[10px] text-[#FFF] bg-[#222226] hover:bg-[#000000] disabled:bg-[#4B4B4B] disabled:text-gray-200 disabled:cursor-not-allowed"
-        :disabled="props.file?.status !== 0"
+        :disabled="props.file?.status === 1 || props.file?.status === 2"
         @click="startTranscription"
       >
         <img src="@/assets/file/transcribe.svg" alt="transcribe" />
-        <span>开始转录</span>
+        <span v-if="props.file?.status === 0">开始转录</span>
+        <span v-if="props.file?.status === 3">重新转录</span>
       </button>
     </div>
     <!-- <div class="h-1 w-full bg-[#eaebec]" /> -->
