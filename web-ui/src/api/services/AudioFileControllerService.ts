@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { AudioFileQueryRequest,AudioFileVO, BaseResponse_AudioFileVO_, BaseResponse_List_AudioFileVO_, BaseResponse_Page_AudioFileVO_, BaseResponse_string_, CancelablePromise } from '@/api'
+import type { AudioFileQueryRequest, AudioFileUpdateRequest, BaseResponse_AudioFileVO_, BaseResponse_List_AudioFileVO_, BaseResponse_Page_AudioFileVO_, BaseResponse_string_, CancelablePromise } from '@/api'
 import { OpenAPI } from '@/api'
 import { request as __request } from '../core/request'
 
@@ -91,11 +91,11 @@ export class AudioFileControllerService {
   /**
    * upload
    * @param file file
-   * @returns BaseResponse_string_ OK
+   * @returns BaseResponse_AudioFileVO_ OK
    * @returns any Created
    * @throws ApiError
    */
-  public static uploadUsingPost(file: Blob): CancelablePromise<AudioFileVO | any> {
+  public static uploadUsingPost(file: Blob): CancelablePromise<BaseResponse_AudioFileVO_ | any> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/core/audio/upload',
@@ -117,20 +117,37 @@ export class AudioFileControllerService {
    * @returns any Created
    * @throws ApiError
    */
-  public static transcribeUsingPost(
-      id: number,
-  ): CancelablePromise<BaseResponse_string_ | any> {
+  public static transcribeUsingPost(id: number): CancelablePromise<BaseResponse_string_ | any> {
     return __request(OpenAPI, {
       method: 'POST',
       url: '/core/audio/start/transcribe/{id}',
       path: {
-        'id': id,
+        id: id,
       },
       errors: {
         401: `Unauthorized`,
         403: `Forbidden`,
         404: `Not Found`,
       },
-    });
+    })
+  }
+  /**
+   * updateAudioFile
+   * @param updateRequest updateRequest
+   * @returns BaseResponse_string_ OK
+   * @returns any Created
+   * @throws ApiError
+   */
+  public static updateAudioFileUsingPost(updateRequest: AudioFileUpdateRequest): CancelablePromise<BaseResponse_string_ | any> {
+    return __request(OpenAPI, {
+      method: 'POST',
+      url: '/core/audio/update',
+      body: updateRequest,
+      errors: {
+        401: `Unauthorized`,
+        403: `Forbidden`,
+        404: `Not Found`,
+      },
+    })
   }
 }

@@ -7,6 +7,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { AudioFileQueryRequest } from './models/AudioFileQueryRequest';
+export type { AudioFileUpdateRequest } from './models/AudioFileUpdateRequest';
 export type { AudioFileVO } from './models/AudioFileVO';
 export type { BaseResponse_AudioFileVO_ } from './models/BaseResponse_AudioFileVO_';
 export type { BaseResponse_boolean_ } from './models/BaseResponse_boolean_';

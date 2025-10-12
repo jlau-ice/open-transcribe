@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.carbon.audio.model.dto.AudioFileQueryRequest;
+import com.carbon.audio.model.dto.AudioFileUpdateRequest;
 import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.model.vo.AudioFileVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -98,10 +99,10 @@ public interface AudioFileService extends IService<AudioFile> {
     /**
      * 修改音频文件
      *
-     * @param audioFile 音频文件
+     * @param updateRequest 音频文件
      * @return 结果
      */
-    int updateAudioFiles(AudioFile audioFile);
+    int updateAudioFiles(AudioFileUpdateRequest updateRequest);
 
     /**
      * 批量删除音频文件

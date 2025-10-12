@@ -33,26 +33,45 @@
                 </a-tag>
               </div>
             </div>
-            <div class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 transition-opacity duration-200 hover:text-[#f53f3f]" :class="{ 'opacity-100': item.hover, 'opacity-0': !item.hover }" @click.stop="deleteAudio(item)">
+            <div
+              class="absolute right-2 top-1/2 -translate-y-1/2 flex gap-2 transition-opacity duration-200 text-[#83838f] hover:text-[#f53f3f]"
+              :class="{ 'opacity-100': item.hover, 'opacity-0': !item.hover }"
+              @click.stop="deleteAudio(item)"
+            >
               <icon-delete />
+            </div>
+            <div
+              class="absolute right-6 top-1/2 -translate-y-1/2 flex gap-2 transition-opacity duration-200 text-[#83838f] hover:text-[#56beff]"
+              :class="{ 'opacity-100': item.hover, 'opacity-0': !item.hover }"
+              @click.stop="openRename(item)"
+            >
+              <icon-edit />
             </div>
           </div>
         </template>
       </div>
     </div>
   </div>
+  <a-modal v-model:visible="visible" simple @cancel="handleCancel" modal-class="!p-[15px]" @ok="rename">
+    <div>
+      <div class="mb-[10px]">请输入文件名</div>
+      <a-input v-model="audioName" />
+    </div>
+  </a-modal>
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted, ref} from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { AudioFileControllerService } from '@/api'
 import { type AudioFileVO } from '@/api'
 import { useUserStore } from '@/store/user'
 import { Message, Modal } from '@arco-design/web-vue'
 const userStore = useUserStore()
 const audioList = ref<Array<AudioFileVO>>([])
-const filterAudioList = computed(()=> {
-  return audioList.value.filter(item => item.fileName.includes(filterContent.value || ''))
+const visible = ref(false)
+const audioName = ref('')
+const filterAudioList = computed(() => {
+  return audioList.value.filter((item) => item.fileName.includes(filterContent.value || ''))
 })
 const currentAudio = ref<AudioFileVO>({})
 const filterContent = ref<string>()
@@ -131,6 +150,28 @@ const deleteAudio = async (item: AudioFileVO) => {
       Message.info('已取消')
     },
   })
+}
+
+const rename = async (ev: MouseEvent) => {
+  console.log('ev', ev)
+   const res = await AudioFileControllerService.updateAudioFileUsingPost({
+    id: currentAudio.value.id,
+    fileName: audioName.value,
+  })
+  if (res.code === 200){
+    Message.success('修改成功')
+    await getAudioList()
+  }
+}
+
+const openRename = (item: AudioFileVO) => {
+  visible.value = true
+  currentAudio.value = item
+  audioName.value = item.fileName
+}
+
+const handleCancel = () => {
+  visible.value = false
 }
 
 defineExpose({

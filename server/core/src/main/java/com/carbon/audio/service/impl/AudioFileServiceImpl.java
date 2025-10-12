@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.carbon.audio.mapper.AudioFileMapper;
 import com.carbon.audio.model.dto.AudioFileQueryRequest;
+import com.carbon.audio.model.dto.AudioFileUpdateRequest;
 import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
@@ -20,6 +21,7 @@ import com.carbon.service.UserService;
 import com.carbon.utils.MinioUtil;
 import com.carbon.utils.SqlUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -212,12 +214,14 @@ public class AudioFileServiceImpl extends ServiceImpl<AudioFileMapper, AudioFile
     /**
      * 修改音频文件
      *
-     * @param audioFile 音频文件
+     * @param updateRequest 音频文件
      * @return 结果
      */
     @Override
     @Transactional(readOnly = false, rollbackFor = Exception.class)
-    public int updateAudioFiles(AudioFile audioFile) {
+    public int updateAudioFiles(AudioFileUpdateRequest updateRequest) {
+        AudioFile audioFile = new AudioFile();
+        BeanUtils.copyProperties(updateRequest, audioFile);
         return audioFileMapper.updateAudioFile(audioFile);
     }
 

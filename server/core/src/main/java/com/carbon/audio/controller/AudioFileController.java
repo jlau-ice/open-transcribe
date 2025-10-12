@@ -3,6 +3,7 @@ package com.carbon.audio.controller;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.carbon.annotation.Log;
 import com.carbon.audio.model.dto.AudioFileQueryRequest;
+import com.carbon.audio.model.dto.AudioFileUpdateRequest;
 import com.carbon.audio.model.vo.AudioFileVO;
 import com.carbon.audio.service.AudioFileService;
 import com.carbon.common.BaseResponse;
@@ -99,6 +100,14 @@ public class AudioFileController {
     @Log(title = "开始转录", businessType = BusinessType.OTHER)
     public BaseResponse<String> transcribe(@PathVariable("id") Long id) {
         audioFileService.transcribe(id);
+        return ResultUtils.success();
+    }
+
+
+    @PostMapping("/update")
+    @Log(title = "更新音频文件", businessType = BusinessType.UPDATE)
+    public BaseResponse<String> updateAudioFile(@RequestBody AudioFileUpdateRequest updateRequest) {
+        audioFileService.updateAudioFiles(updateRequest);
         return ResultUtils.success();
     }
 }

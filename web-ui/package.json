@@ -7,7 +7,7 @@
     "dev": "vite --open",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
-    "generate:api": "openapi --input http://127.0.0.1:8101/api/v2/api-docs --output ./src/api --client axios --exportSchemas true",
+    "generate:api": "openapi --input http://127.0.0.1:8101/api/v2/api-docs --output ./src/api --client axios",
     "openapi": "node openapi.config.js"
   },
   "dependencies": {
