@@ -12,13 +12,13 @@ export default [
     name: 'app/files-to-ignore',
     ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
   },
+  ...pluginVue.configs['flat/essential'],
+  ...vueTsEslintConfig(),
+  skipFormatting,
   {
+    name: 'app/custom-rules',
     rules: {
       'vue/multi-word-component-names': 'off',
     },
   },
-
-  ...pluginVue.configs['flat/essential'],
-  ...vueTsEslintConfig(),
-  skipFormatting,
 ]
