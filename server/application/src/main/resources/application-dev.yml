@@ -65,20 +65,34 @@ knife4j:
 com:
   carbon:
     minio:
-      endPoint: http://127.0.0.1:9000
+      endPoint: http://192.168.172.214:9998
+      # endPoint: http://127.0.0.1:9000
       bucketName: asr
-      accessKey: minio_h2tzp6
-      secretKey: minio_Sfh2Zr
+      # accessKey: minio_h2tzp6
+      # secretKey: minio_Sfh2Zr
+      accessKey: tiger
+      secretKey: tiger123
     snowflake:
       dataCenterId: 0
       workerId: 1
+    mq:
+      # 发送消息主题
+      producer:
+        topic: asr_transfer_topic
+        tag: tag_asr_transfer_txt
+      # consumer:
+      #   group: audio-consumer-group
+      #   topic: asr_result_topic
+      #   tag: tag_asr_transfer_result
+
 
 rocketmq:
   consumer:
     group: audio-producer-group
     # 一次拉取消息最大值，注意是拉取消息的最大值而非消费最大值
     pull-batch-size: 10
-  name-server: 127.0.0.1:9876
+  name-server: 192.168.172.214:9876
+  # name-server: 127.0.0.1:9876
   producer:
     # 发送同一类消息的设置为同一个group，保证唯一
     group: springboot_producer_group

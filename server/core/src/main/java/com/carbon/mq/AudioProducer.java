@@ -1,7 +1,6 @@
 package com.carbon.mq;
 
 
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 import com.carbon.audio.model.entity.AudioFile;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
@@ -16,9 +15,11 @@ public class AudioProducer {
     @Value("${com.carbon.minio.bucketName}")
     private String bucketName;
 
-    public static final String TOPIC = "asr_transfer_topic";
+    @Value("${com.carbon.mq.producer.topic}")
+    private String producerTopic;
 
-    private static final String TAG = "tag_asr_transfer_txt";
+    @Value("${com.carbon.mq.producer.tag}")
+    private String producerTag;
 
     private final RocketMQTemplate rocketMQTemplate;
 
@@ -33,6 +34,6 @@ public class AudioProducer {
      */
     public void sendAudioInfo(AudioFile audioFile) {
         audioFile.setFilePath(endPoint + "/" + bucketName + "/" + audioFile.getFilePath());
-        rocketMQTemplate.convertAndSend(TOPIC + ":" + TAG, JSONUtil.toJsonStr(audioFile));
+        rocketMQTemplate.convertAndSend(producerTopic + ":" + producerTag, JSONUtil.toJsonStr(audioFile));
     }
 }

@@ -1,0 +1,143 @@
+services:
+  web-ui:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "${EXPOSE_NGINX_PORT:-6666}:${NGINX_PORT:-6666}"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/dist:/usr/share/nginx/html
+    networks:
+      - web
+    restart: always
+
+  server:
+    image: server:latest
+    container_name: server
+    restart: always
+    volumes:
+      - ./server/conf:/app/conf
+      - ./server/log:/app/log
+      - ./server/data:/app/data
+    ports:
+      - "${EXPOSE_SERVER_PORT:-8080}:${SERVER_PORT:-8080}"
+    networks:
+      - trabscribe-network
+    depends_on:
+      - db
+
+  worker:
+    image: worker:latest
+    container_name: worker
+    restart: always
+    volumes:
+      - ./worker/conf:/app/conf
+      - ./worker/log:/app/log
+      - ./worker/data:/app/data
+    networks:
+      - trabscribe-network
+    
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    volumes:
+      - ./volumes/redis/conf:/usr/local/etc/redis
+      - ./volumes/redis/data:/data
+    environment:
+      REDISCLI_AUTH: ${REDIS_PASSWORD:-foobared}
+    ports:
+      - "${EXPOSE_REDIS_PORT:-6388}:${REDIS_PORT:-6379}"
+    command: redis-server --requirepass ${REDIS_PASSWORD:-foobared}
+    networks:
+      - trabscribe-network
+    healthcheck:
+      test: [ 'CMD', 'redis-cli', 'ping' ]
+
+
+  minio:
+    container_name: minio
+    image: minio:latest
+    restart: always
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minio_h2tzp6}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minio_Sfh2Zr}
+      CONTAINER_TIMEZONE: Asia/Shanghai
+    volumes:
+      - ./volumes/minio:/data
+    ports:
+      - "${:-}:${:-}"
+      - "${:-}:${:-}"
+    command: minio server /data --console-address ":9001" -address ":9000"
+    networks:
+      - trabscribe-network
+  
+  db:
+    container_name: mysql8
+    image: mysql8:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-sxkj0818web}
+    volumes:
+      - ./volumes/mysql8/log:/var/lib/mysql
+      - ./volumes/mysql8/data:/var/lib/mysql
+      - ./volumes/mysql8/conf/my.cnf:/etc/my.cnf
+    ports:
+      - "${EXPOSE_MYSQL_PORT:-3306}:${MYSQL_PORT:-3306}"
+    networks:
+      - trabscribe-network
+  
+  namesrv:
+    image: apache/rocketmq:5.3.0
+    container_name: rocketmq-namesrv
+    ports:
+      - "9876:9876"  # NameServer 端口
+    environment:
+      - JAVA_OPT_EXT=-Xms512m -Xmx512m  # JVM 内存配置
+    command: sh mqnamesrv
+    volumes:
+      - ./data/namesrv/logs:/home/rocketmq/logs  # 日志目录外挂
+    networks:
+      - rocketmq-network
+    restart: unless-stopped
+
+  # Broker 服务 - 消息存储和转发
+  broker:
+    image: apache/rocketmq:5.3.0
+    container_name: rocketmq-broker
+    ports:
+      - "10909:10909"  # VIP 通道端口
+      - "10911:10911"  # 主端口
+      - "10912:10912"  # 从端口
+    environment:
+      - NAMESRV_ADDR=namesrv:9876  # NameServer 地址
+      - JAVA_OPT_EXT=-Xms1g -Xmx1g -Duser.home=/home/rocketmq  # JVM 内存配置
+    command: sh mqbroker -c /home/rocketmq/broker.conf
+    volumes:
+      - ./data/broker/logs:/home/rocketmq/logs  # 日志目录外挂
+      - ./data/broker/store:/home/rocketmq/store  # 消息存储目录外挂
+      - ./conf/broker.conf:/home/rocketmq/broker.conf  # Broker 配置文件
+    depends_on:
+      - namesrv
+    networks:
+      - rocketmq-network
+    restart: unless-stopped
+
+  # RocketMQ Dashboard - Web 控制台
+  dashboard:
+    image: apacherocketmq/rocketmq-dashboard:latest
+    container_name: rocketmq-dashboard
+    ports:
+      - "8082:8082"  # Dashboard 访问端口
+    environment:
+      - JAVA_OPTS=-Xmx256m -Xms256m  # JVM 内存配置
+      - rocketmq.config.namesrvAddr=namesrv:9876  # NameServer 地址
+      - rocketmq.config.dataPath=/tmp/rocketmq-console/data  # 数据路径
+    depends_on:
+      - namesrv
+      - broker
+    networks:
+      - rocketmq-network
+    restart: unless-stopped

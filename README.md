@@ -23,8 +23,8 @@
 - 音频处理结果展示：倍速播放、说话人分离、点击文字定位到音频位置
 
 图片示例：
-![alt text](/doc/image1.png)
-![alt text](/doc/image.png)
+![alt text](/docs/images/image1.png)
+![alt text](/docs/images/image.png)
 
 ---
 

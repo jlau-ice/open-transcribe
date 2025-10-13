@@ -7,6 +7,7 @@ server:
 rocketmq:
   # NameServer 地址列表，例如：
   nameservers:
+    # - "192.168.172.214:9876"
     - "127.0.0.1:9876"
     # - "192.168.1.10:9876"
   # 推荐使用5.x gRPC 客户端时，如果使用 Proxy，这里应配置 Proxy 地址
