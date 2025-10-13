@@ -15,8 +15,8 @@
         @click="startTranscription"
       >
         <img src="@/assets/file/transcribe.svg" alt="transcribe" />
-        <span v-if="props.file?.status === 0">开始转录</span>
         <span v-if="props.file?.status === 3">重新转录</span>
+        <span v-else>开始转录</span>
       </button>
     </div>
     <!-- <div class="h-1 w-full bg-[#eaebec]" /> -->
