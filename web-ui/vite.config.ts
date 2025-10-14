@@ -8,7 +8,11 @@ export default defineConfig({
     host: true,
     port: 8888,
     proxy: {
-      '/api': 'http://127.0.0.1:8101',
+      '/api': {
+        target: 'http://127.0.0.1:8101',
+        changeOrigin: true,
+        ws: true,
+      },
       // '/asr': 'http://127.0.0.01:9000',
       '/asr': 'http://192.168.172.214:9998',
     },

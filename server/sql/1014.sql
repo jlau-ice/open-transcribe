@@ -1,0 +1,1 @@
+ALTER TABLE `transcribe_result` ADD UNIQUE INDEX `idx_audio_id_unique` (`audio_id`);

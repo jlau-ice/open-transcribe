@@ -67,6 +67,9 @@ import { type AudioFileVO } from '@/api'
 import { useUserStore } from '@/store/user'
 import { Message, Modal } from '@arco-design/web-vue'
 const userStore = useUserStore()
+import { getWSClient } from '@/utils/websocket'
+import { type SuccessNotification } from '@/types/websocket'
+const wsClient = getWSClient()
 const audioList = ref<Array<AudioFileVO>>([])
 const visible = ref(false)
 const audioName = ref('')
@@ -77,6 +80,13 @@ const currentAudio = ref<AudioFileVO>({})
 const filterContent = ref<string>()
 onMounted(() => {
   getAudioList()
+})
+wsClient.addListener((msg) => {
+  const data: SuccessNotification = JSON.parse(msg)
+  if (data.status === 'success') {
+    getAudioList()
+    Message.success(data.message || '音频处理成功')
+  }
 })
 
 const statusMap = {
@@ -154,11 +164,11 @@ const deleteAudio = async (item: AudioFileVO) => {
 
 const rename = async (ev: MouseEvent) => {
   console.log('ev', ev)
-   const res = await AudioFileControllerService.updateAudioFileUsingPost({
+  const res = await AudioFileControllerService.updateAudioFileUsingPost({
     id: currentAudio.value.id,
     fileName: audioName.value,
   })
-  if (res.code === 200){
+  if (res.code === 200) {
     Message.success('修改成功')
     await getAudioList()
   }

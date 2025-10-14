@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import {ref} from 'vue'
 import SideBar from './SideBar.vue'
 import UploadContent from './UploadContent.vue'
 import { AudioFileVO } from '@/api'

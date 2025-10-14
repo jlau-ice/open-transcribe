@@ -2,7 +2,7 @@
   <div class="mt-[60px] mx-[auto] min-w-[840px]">
     <div class="flex flex-col items-center border-[1px] border-[#bdbdbd] border-dashed rounded-[20px] p-[32px] bg-[#fafafa]">
       <img class="max-h-[108px]" src="@/assets/file/upload.png" alt="upload" />
-      <div class="p-[10px] flex justify-center items-center gap-[10px] mt-[12px] cursor-pointer bg-[#222226] hover:bg-[#000] rounded-[10px] min-w-[328px] h-[48px]">
+      <div class="p-[10px] flex justify-center items-center gap-[10px] mt-[12px] cursor-pointer bg-[#222226] hover:bg-[#000] rounded-[10px] min-w-[328px] h-[48px]" @click="startRecording">
         <img src="@/assets/file/start.svg" alt="start" />
         <span class="text-[#FFF]">开始录音</span>
       </div>
@@ -89,6 +89,9 @@ const handleUpload = async ({ onError, onSuccess, fileItem }) => {
     onError()
     Message.error(res.message)
   }
+}
+const startRecording = () => {
+
 }
 </script>
 
