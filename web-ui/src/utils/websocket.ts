@@ -112,6 +112,6 @@ class WSClientSingleton {
 // 封装一个全局方法获取实例
 export function getWSClient(): WSClientSingleton {
     const userStore = useUserStore();
-    const userId = userStore.loginUser.id;
-    return WSClientSingleton.getInstance(userId);
+    const userId = userStore.loginUser?.id;
+    return WSClientSingleton.getInstance(userId as number);
 }

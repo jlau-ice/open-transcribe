@@ -98,6 +98,6 @@ public class RedisCache {
      * @return true 成功, false 失败
      */
     public boolean expire(final String key, final long timeout, final TimeUnit timeUnit) {
-        return Boolean.TRUE.equals(redisTemplate.expire(key, timeout, timeUnit));
+        return redisTemplate.expire(key, timeout, timeUnit);
     }
 }

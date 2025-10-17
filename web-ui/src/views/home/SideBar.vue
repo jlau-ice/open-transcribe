@@ -1,5 +1,5 @@
 <template>
-  <div class="w-[240px] bg-[#f8f8f9] h-[calc(100vh-60px)] p-[10px] border-r-[1px] border-[#eaebec] max-h-[calc(100vh-60px)]">
+  <div class="w-[240px] shrink-0 bg-[#f8f8f9] h-[calc(100vh-60px)] p-[10px] border-r-[1px] border-[#eaebec] max-h-[calc(100vh-60px)]">
     <div class="flex flex-col gap-10px">
       <div class="h-[140px]">
         <a-input class="arco-input-wrapper h-[40px] !rounded-[6px] !border-[#eaebec]" v-model="filterContent" placeholder="搜索" size="large" allow-clear>

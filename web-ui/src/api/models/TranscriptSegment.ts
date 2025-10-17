@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 export type TranscriptSegment = {
+    id?: string;
     end?: number;
     speaker?: string;
     start?: number;
