@@ -7,6 +7,11 @@ import lombok.Data;
 public class TranscriptSegment {
 
     /**
+     * 段落id
+     */
+    private String id;
+
+    /**
      * 开始时间戳
      */
     private Double start;

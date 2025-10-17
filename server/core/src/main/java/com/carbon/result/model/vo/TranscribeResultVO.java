@@ -1,14 +1,17 @@
 package com.carbon.result.model.vo;
 
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.carbon.result.model.dto.TranscriptSegment;
 import com.carbon.result.model.entity.TranscribeResult;
+import com.carbon.utils.uuid.IdUtils;
 import lombok.Data;
 import org.springframework.beans.BeanUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -65,8 +68,14 @@ public class TranscribeResultVO {
         TranscribeResultVO transcribeResultVO = new TranscribeResultVO();
         BeanUtils.copyProperties(transcribeResult, transcribeResultVO);
         String resultText = transcribeResult.getResultText();
-        List<TranscriptSegment> segments;
-        segments = JSONUtil.toList(resultText, TranscriptSegment.class);
+        if (StrUtil.isBlank(resultText)) {
+            transcribeResultVO.setResultSegments(Collections.emptyList());
+            return transcribeResultVO;
+        }
+        List<TranscriptSegment> segments = JSONUtil.toList(resultText, TranscriptSegment.class)
+                .stream()
+                .peek(s -> s.setId(IdUtils.randomUUID()))
+                .toList();
         transcribeResultVO.setResultSegments(segments);
         return transcribeResultVO;
     }

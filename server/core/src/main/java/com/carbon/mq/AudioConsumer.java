@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.carbon.audio.model.entity.AudioFile;
 import com.carbon.audio.service.AudioFileService;
 import com.carbon.common.AsyncTaskService;
-import com.carbon.common.UserContext;
-import com.carbon.model.entity.User;
 import com.carbon.result.mapper.TranscribeResultMapper;
 import com.carbon.result.model.dto.TranscribeMessage;
 import com.carbon.result.model.entity.TranscribeResult;
@@ -17,13 +15,8 @@ import com.carbon.websocket.service.WebSocketService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.rocketmq.spring.annotation.RocketMQMessageListener;
 import org.apache.rocketmq.spring.core.RocketMQListener;
-import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-
-import javax.annotation.PostConstruct;
-import java.util.HashSet;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -42,18 +35,14 @@ public class AudioConsumer implements RocketMQListener<String> {
 
     private final WebSocketService webSocketService;
 
-    private final AsyncTaskService asyncTaskService;
-
     public AudioConsumer(TranscribeResultService transcribeResultService,
                          AudioFileService audioFileService,
                          TranscribeResultMapper transcribeResultMapper,
-                         WebSocketService webSocketService,
-                         AsyncTaskService asyncTaskService) {
+                         WebSocketService webSocketService) {
         this.transcribeResultService = transcribeResultService;
         this.audioFileService = audioFileService;
         this.transcribeResultMapper = transcribeResultMapper;
         this.webSocketService = webSocketService;
-        this.asyncTaskService = asyncTaskService;
     }
 
     @Override
