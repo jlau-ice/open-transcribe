@@ -23,7 +23,7 @@
         </template>
       </a-upload>
       <div class="mt-[20px] flex items-center gap-[10px]">
-        <span class="text-[12px] text-[#8c8c8c]">最大文件大小：50M </span>
+        <span class="text-[12px] text-[#8c8c8c]">最大文件大小：1G </span>
         <span class="text-[12px] text-[#8c8c8c]">最大录制时长：6 小时</span>
         <span class="text-[12px] text-[#8c8c8c]">支持的文件类型</span>
         <a-tooltip
@@ -68,7 +68,7 @@ const beforeUpload = (file: File) => {
     Message.error('不支持该文件类型')
     return false
   }
-  if (file.size > 50 * 1024 * 1024) {
+  if (file.size > 1024 * 1024 * 1024) {
     Message.error('文件大小超出限制')
     return false
   }
